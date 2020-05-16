@@ -1,0 +1,5 @@
+# Android Project Path Ignore
+
+MotionControllerKotlin\local.properties
+MotionControllerKotlin\app\local.properties
+
