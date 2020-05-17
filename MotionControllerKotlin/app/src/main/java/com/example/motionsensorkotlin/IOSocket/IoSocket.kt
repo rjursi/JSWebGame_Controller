@@ -60,8 +60,15 @@ class  IoSocket (mainContext : Context){
 
         mSocket.on("server_inviteCode", onGetInviteCode);
 
+        mSocket.on("server_Disconnected", onDisconnected);
+
     }
 
+    private val onDisconnected : Emitter.Listener = Emitter.Listener {
+
+
+
+    }
 
     // 서버에서 만들고 보낸 초대 코드를 안드로이드 안에서도 사용이 가능하도록 처리
     private val onGetInviteCode : Emitter.Listener = Emitter.Listener{ args ->

@@ -142,9 +142,22 @@ class MainActivity : AppCompatActivity(), JoystickView.JoystickListener {
         // 서버 연결
         IoSocketConn.connectIoServer(gamesocketId)
 
-        // 바로 센서가 동작하도록 설정, 센서 값은 보통 속도로 넘기도록 설정
-        accTestBtn.setOnClickListener {
-            sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
+        // 해당 버튼을 누를때만 보내도록 설정
+        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN ->{
+                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    sensorManager.unregisterListener(gyroScopeSensorListener)
+                }
+            }
+
+            true
+
+
+
         }
 
 
