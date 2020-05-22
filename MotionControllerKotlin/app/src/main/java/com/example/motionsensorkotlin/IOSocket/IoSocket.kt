@@ -1,9 +1,14 @@
 package com.example.motionsensorkotlin.IOSocket
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.telecom.Call
 import android.util.Log
+import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.finishAffinity
 import com.example.motionsensorkotlin.MainActivity
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO;
@@ -12,13 +17,13 @@ import org.json.JSONObject
 import java.net.URISyntaxException
 
 
-class  IoSocket (mainContext : Context){
+class  IoSocket (mainActivity : Activity){
     lateinit var mSocket: Socket
     lateinit var username: String
     lateinit var gamesockId: String
     var users: Array<String> = arrayOf()
     lateinit var inviteCode : String
-    private var mainContext : Context = mainContext
+    private var mainActivity : Activity = mainActivity
 
     fun connectIoServer(gamesockId : String){
         this.gamesockId = gamesockId
@@ -58,15 +63,33 @@ class  IoSocket (mainContext : Context){
         Log.d("IOSocket", "Socket is Connected with $gamesockId")
 
 
-        mSocket.on("server_inviteCode", onGetInviteCode);
-
-        mSocket.on("server_Disconnected", onDisconnected);
+        mSocket.on("server_inviteCode", onGetInviteCode)
+        
+        // 서버 측에서 웹 페이지가 종료되었다는 신호를 보낼 경우
+        mSocket.on("server_Disconnected", onDisconnected)
 
     }
 
     private val onDisconnected : Emitter.Listener = Emitter.Listener {
+        mainActivity.runOnUiThread(Runnable {
+            val builder = AlertDialog.Builder(mainActivity)
+
+            // Toast.makeText(mainActivity, "Server Disconnected", Toast.LENGTH_LONG).show()
+            builder.setTitle("웹 게임 페이지 종료")
+            builder.setMessage("웹 페이지 상의 게임이 종료 되어서 컨트롤러를 종료합니다.")
+
+            builder.setPositiveButton("Yes"){dialog, which ->
+
+                finishAffinity(mainActivity)
+                System.runFinalization()
+                System.exit(0)
+            }
+
+            val dialog: AlertDialog = builder.create()
 
 
+            dialog.show()
+        })
 
     }
 
