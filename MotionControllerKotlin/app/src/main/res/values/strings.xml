@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MotionSensorKotlin</string>
     <string name="Intro">Intro</string>
+    <string name="Title">Blindness</string>
 </resources>
