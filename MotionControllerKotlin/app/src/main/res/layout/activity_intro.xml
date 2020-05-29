@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/BGColorOfIntro"
+    android:id="@+id/IntroLayout"
     >
 
 
@@ -28,7 +29,7 @@
         android:id="@+id/PleaseTab"
         android:text="@string/IntroPleaseTab"
         android:textColor="@color/FontColorOfIntro"
-        android:textSize="30dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
