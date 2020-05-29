@@ -10,18 +10,29 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/Intro"
+        android:text="@string/Title"
         android:id="@+id/IntroTitle"
-        android:textSize="40dp"
+        android:textSize="50dp"
         android:textColor="@color/FontColorOfIntro"
         android:textAlignment="center"
         android:gravity="center"
-
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/PleaseTab"
+        android:text="@string/IntroPleaseTab"
+        android:textColor="@color/FontColorOfIntro"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="80dp"
         />
 
     <!-- 이전 버전도 호환이 되게 하기 위하여 gravity 사용 -->
