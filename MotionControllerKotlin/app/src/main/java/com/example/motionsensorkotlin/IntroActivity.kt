@@ -2,14 +2,16 @@ package com.example.motionsensorkotlin
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.view.animation.AnimationSet
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.example.motionsensorkotlin.Intro.IntroPart
 import kotlinx.android.synthetic.main.activity_intro.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+
 
 
 class IntroActivity : AppCompatActivity() {
@@ -20,21 +22,18 @@ class IntroActivity : AppCompatActivity() {
 
     val DURATION : Long = 2000 // 1초 대기하고 이동하도록 설정
 
-    private var fadeIn :AlphaAnimation = AlphaAnimation(0.0f, 1.0f)
-    private var fadeout :AlphaAnimation = AlphaAnimation(1.0f, 0.0f)
 
-    private var fadeAni :AlphaAnimation = AlphaAnimation(1.0f, 0.0f)
-    private var AnimatioSet : AnimationSet = AnimationSet(true)
+    private var AniSet : AnimationSet = AnimationSet(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //hides title bar
+        //full screen
         try {
-            this.supportActionBar!!.hide()
+            supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } catch (e: NullPointerException) {}
-
-
 
         setContentView(R.layout.activity_intro)
 
@@ -52,26 +51,11 @@ class IntroActivity : AppCompatActivity() {
 //        },DURATION)
 
 
+        //깜빡이게
+        var alpha : Animation = AnimationUtils.loadAnimation(this,R.anim.alpha)
+        AniSet.addAnimation(alpha)
+        PleaseTab.startAnimation(AniSet)
 
-        fadeIn.duration=2000
-        fadeout.duration=2000
-
-        fadeAni.duration=2000
-        AnimatioSet.addAnimation(fadeAni)
-
-
-
-//        AnimatioSet.addAnimation(fadeout)
-//        AnimatioSet.startOffset=0
-//        AnimatioSet.addAnimation(fadeIn)
-
-        var job = GlobalScope.launch(Dispatchers.Default){
-            repeat(10){
-                AnimatioSet.start()
-            }
-        }
-
-        job.start()
 
         IntroLayout.setOnClickListener {
             val intent = Intent(this, ConnectControllerActivity::class.java)
