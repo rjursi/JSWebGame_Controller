@@ -2,19 +2,15 @@ package com.example.motionsensorkotlin
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.view.MotionEvent
-import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.motionsensorkotlin.Intro.IntroPart
 import kotlinx.android.synthetic.main.activity_intro.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 class IntroActivity : AppCompatActivity() {
 
@@ -32,6 +28,13 @@ class IntroActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //hides title bar
+        try {
+            this.supportActionBar!!.hide()
+        } catch (e: NullPointerException) {}
+
+
 
         setContentView(R.layout.activity_intro)
 
@@ -55,7 +58,8 @@ class IntroActivity : AppCompatActivity() {
 
         fadeAni.duration=2000
         AnimatioSet.addAnimation(fadeAni)
-        
+
+
 
 //        AnimatioSet.addAnimation(fadeout)
 //        AnimatioSet.startOffset=0
