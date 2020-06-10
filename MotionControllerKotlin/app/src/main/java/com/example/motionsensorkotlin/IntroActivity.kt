@@ -1,6 +1,7 @@
 package com.example.motionsensorkotlin
 
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -9,6 +10,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.motionsensorkotlin.Intro.IntroPart
 import kotlinx.android.synthetic.main.activity_intro.*
 
@@ -25,8 +27,14 @@ class IntroActivity : AppCompatActivity() {
 
     private var AniSet : AnimationSet = AnimationSet(true)
 
+
+//    private val constlayout : ConstraintLayout = IntroLayout
+//    private val aniGradient : AnimationDrawable =constlayout.background as AnimationDrawable
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         //full screen
         try {
@@ -35,9 +43,20 @@ class IntroActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } catch (e: NullPointerException) {}
 
-        setContentView(R.layout.activity_intro)
 
+        setContentView(R.layout.activity_intro)
+        var constlayout : ConstraintLayout = IntroLayout
+        val aniGradient : AnimationDrawable =constlayout.background as AnimationDrawable
+
+
+
+
+        aniGradient.setEnterFadeDuration(2000)
+        aniGradient.setExitFadeDuration(4500)
+        aniGradient.start()
         uniqueID = introPart.getAppInstanceId()
+
+
 
         // 생성한 ID를 Toast 로 한번 출력
         //Toast.makeText(this, "ID : " + uniqueID, Toast.LENGTH_LONG).show()
