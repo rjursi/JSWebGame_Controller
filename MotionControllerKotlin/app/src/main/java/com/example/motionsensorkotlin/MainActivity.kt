@@ -2,7 +2,6 @@ package com.example.motionsensorkotlin
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -12,18 +11,28 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toolbar
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+//import androidx.test.espresso.core.internal.deps.guava.collect.Range.closed
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_temp.*
+import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
 import java.io.IOException
 
@@ -190,6 +199,26 @@ class MainActivity : AppCompatActivity(), JoystickView.JoystickListener {
         
 
     }
+
+    //사이드 메뉴 이니셜라이저
+//    fun InitializeLayout() { //toolBar를 통해 App Bar 생성
+//        val toolbar : Toolbar = toolbar
+//        setSupportActionBar(toolbar)
+//
+//        supportActionBar.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher)
+//
+//        val drawLayout : DrawerLayout = drawer_layout
+//        val navigationView : ActionBar.NavigationMode = nav_view
+//
+//        val actionBarDrawerToggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this,
+//            drawLayout,
+//            toolbar,
+//            R.string.open,
+//            R.string.closed)
+//        drawLayout.addDrawerListener(actionBarDrawerToggle)
+//
+//    }
 
 
     // 어플리케이션을 잠시 내렸을 경우
