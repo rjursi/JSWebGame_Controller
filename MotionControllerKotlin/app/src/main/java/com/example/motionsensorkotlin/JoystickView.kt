@@ -120,10 +120,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
     }
 
     interface JoystickListener {
-        fun onJoystickMoved(
-            xPercent: Float,
-            yPercent: Float,
-            source: Int
-        ) // void onJoystickMoved(float posX, float posY, float centroX, float CentroY, float radio, int source);
+        fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int)
+        // void onJoystickMoved(float posX, float posY, float centroX, float CentroY, float radio, int source);
     }
 }
