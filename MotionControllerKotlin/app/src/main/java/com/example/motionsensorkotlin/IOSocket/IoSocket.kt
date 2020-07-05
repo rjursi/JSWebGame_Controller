@@ -123,6 +123,12 @@ class  IoSocket (mainActivity : Activity){
         mSocket.emit("ad_GyroData",data)
     }
 
+    fun sendJoystickData(data : Double){
+
+        mSocket.emit("ad_joystickData", data)
+    }
+
+
     fun sendVoiceData(data : JSONObject){
         mSocket.emit("ad_VoiceData", data)
     }

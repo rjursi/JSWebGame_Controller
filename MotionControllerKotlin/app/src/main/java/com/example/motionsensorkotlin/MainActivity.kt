@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), JoystickView.JoystickListener {
         )
 
     override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
-
+        var directionData : Double = 0.0
         when (source) {
             R.id.joystickLeft ->
             {
@@ -76,30 +76,47 @@ class MainActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
                     if ((yPercent < 0.0 && yPercent > -0.75) && (xPercent > 0.0 && xPercent < 0.75)) {
                         tvLog.text = "1.5시 방향"
+                        directionData = 1.5
+
+
                     }
                     if ((yPercent < 0.3 && yPercent > -0.3) && (xPercent > 0.0 && xPercent < 1.0)) {
                         tvLog.text = "3시방향"
+                        directionData = 3.0
                     }
                     if ((yPercent < 0.75 && yPercent > 0.0) && (xPercent > 0.0 && xPercent < 0.75)) {
                         tvLog.text = "4.5시 방향"
+                        directionData = 4.5
                     }
                     if ((yPercent < 0.3 && yPercent > -0.3) && (xPercent < 0.0 && xPercent > -1.0)) {
                         tvLog.text = "9시방향"
+                        directionData = 9.0
                     }
                     if ((yPercent < 0.75 && yPercent > 0.0) && (xPercent > -0.75 && xPercent < 0.0)) {
                         tvLog.text = "7.5시 방향"
+                        directionData = 7.5
                     }
 
                     if ((yPercent > -1.0 && yPercent < 0.0) && (xPercent > -0.3 && xPercent < 0.3)) {
                         tvLog.text = "12시방향"
+                        directionData = 12.0
                     }
                     if ((yPercent < 0.0 && yPercent > -0.75) && (xPercent > -0.75 && xPercent < 0.0)) {
                         tvLog.text = "10.5시 방향"
+                        directionData = 10.5
                     }
 
                     if ((yPercent > 0.0 && yPercent < 1.0) && (xPercent > -0.3 && xPercent < 0.3)) {
                         tvLog.text = "6시방향"
+                        directionData = 6.0
                     }
+
+
+                    directionData = String.format("%.2f", directionData).toDouble()
+
+
+
+                    IoSocketConn.sendJoystickData(directionData)
                 }
 
                 if (yPercent == 0F && xPercent == 0F)
