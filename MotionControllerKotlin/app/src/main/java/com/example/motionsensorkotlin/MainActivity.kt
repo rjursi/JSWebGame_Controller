@@ -30,129 +30,21 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
+import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_temp.*
-import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.activity_main.connectCtrlBtn
+
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
 import java.io.IOException
 
 
-class MainActivity : AppCompatActivity(), JoystickView.JoystickListener {
-    // : - AppCompatActivity 클래스를 상속을 한다는 의미 (클래스 앞에 붙을 경우)
-
-    private val sensorManager by lazy{
-        // 지연된 초기화 사용
-        getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
-        // sensorManager 변수를 처음 사용할 때 getSystemService() 메서드로 SensorManager 객체를 얻음
-    }
-
-    // 앞 인트로 Activity 에서 보낸 User ID 값을 받기 위한 인텐트 설정
-    lateinit var byConnIntent: Intent
-
-
-    lateinit var gamesocketId : String
-    var IoSocketConn : IoSocket = IoSocket(this@MainActivity)
-    var accelerometerSensorListener : AccelerometerSensorListener =
-        AccelerometerSensorListener(
-            IoSocketConn
-        )
-    // 객체 생성 및 클래스 생성자를 통하여 초기화
-    var gyroScopeSensorListener : GyroScopeSensorListener =
-        GyroScopeSensorListener(
-            IoSocketConn
-        )
-
-    override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
-        var directionData : Double = 0.0
-        when (source) {
-            R.id.joystickLeft ->
-            {
-
-
-                if( (yPercent > 0.3 || yPercent < -0.3) || (xPercent > 0.3 || xPercent < -0.3)) {
-
-                    Log.d("Left Joystick", "X percent: $xPercent Y percent: $yPercent")
-
-                    if ((yPercent < 0.0 && yPercent > -0.75) && (xPercent > 0.0 && xPercent < 0.75)) {
-                        tvLog.text = "1.5시 방향"
-                        directionData = 1.5
-
-
-                    }
-                    if ((yPercent < 0.3 && yPercent > -0.3) && (xPercent > 0.0 && xPercent < 1.0)) {
-                        tvLog.text = "3시방향"
-                        directionData = 3.0
-                    }
-                    if ((yPercent < 0.75 && yPercent > 0.0) && (xPercent > 0.0 && xPercent < 0.75)) {
-                        tvLog.text = "4.5시 방향"
-                        directionData = 4.5
-                    }
-                    if ((yPercent < 0.3 && yPercent > -0.3) && (xPercent < 0.0 && xPercent > -1.0)) {
-                        tvLog.text = "9시방향"
-                        directionData = 9.0
-                    }
-                    if ((yPercent < 0.75 && yPercent > 0.0) && (xPercent > -0.75 && xPercent < 0.0)) {
-                        tvLog.text = "7.5시 방향"
-                        directionData = 7.5
-                    }
-
-                    if ((yPercent > -1.0 && yPercent < 0.0) && (xPercent > -0.3 && xPercent < 0.3)) {
-                        tvLog.text = "12시방향"
-                        directionData = 12.0
-                    }
-                    if ((yPercent < 0.0 && yPercent > -0.75) && (xPercent > -0.75 && xPercent < 0.0)) {
-                        tvLog.text = "10.5시 방향"
-                        directionData = 10.5
-                    }
-
-                    if ((yPercent > 0.0 && yPercent < 1.0) && (xPercent > -0.3 && xPercent < 0.3)) {
-                        tvLog.text = "6시방향"
-                        directionData = 6.0
-                    }
-
-
-                    directionData = String.format("%.2f", directionData).toDouble()
+class MainActivity : AppCompatActivity(){
 
 
 
-                    IoSocketConn.sendJoystickData(directionData)
-                }
 
-                if (yPercent == 0F && xPercent == 0F)
-                {
-                    tvLog.text = ""
-                }
-            }
-        }
-    }
-
-    var texto: TextView? = null
-
-
-    ////////////////////////
-
-    var voicedata : temp = temp(IoSocketConn)
-
-    private var mediaRecorder: MediaRecorder? = null
-    private var mediaPlayer: MediaPlayer? = null
-    private var fileName: String? = null
-
-    companion object {
-        private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
-    }
-    /////////////////////////////
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        var permissionToRecordAccepted = false
-        when (requestCode) {
-            REQUEST_RECORD_AUDIO_PERMISSION -> permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-        }
-        if (permissionToRecordAccepted == false) finish()
-    }
-
+    lateinit var introIntent : Intent
+    lateinit var app_unique_id : String
 
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -161,207 +53,59 @@ class MainActivity : AppCompatActivity(), JoystickView.JoystickListener {
         // savedInstanceState : 액티비티의 이전 상태, 즉 잠시 어플리케이션을 나갓다 오거나 어플리케이션의 이전 상태
 
         // 화면이 꺼지지 않도록 설정
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // 화면이 세로 모드로 고정이 되도록 지정
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-
+        //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        introIntent = intent // getIntent 역할
+        app_unique_id = intent.getStringExtra("intent_uniqueID")
+
+
+        connectCtrlBtn.setOnClickListener {
+            IntentIntegrator(this).initiateScan()
+        }
 
 
 
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        var result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        var UrlRightCheck : Boolean
 
+        if(result != null){
+            if(result.contents == null){
+                Toast.makeText(this, "Cancelled" + result.contents, Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(this, "Scanned : " + result.contents, Toast.LENGTH_SHORT).show()
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_RECORD_AUDIO_PERMISSION)
+                // qr 코드로 부터 url 과 해당 game web socket을 받음
+                val idPutUrl = result.contents
+                UrlRightCheck = idPutUrl.contains("https://jswebgame.run.goorm.io", false)
 
+                if(!UrlRightCheck){
+                    Toast.makeText(this, "Wrong URL value", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    //var mainIntent = Intent(this, MainActivity::class.java)
+                    val mainIntent = Intent(applicationContext, ControllerActivity::class.java)
 
-        // 앞 Intro Activity 에서 보낸 socket ID 값을 받음
-        byConnIntent = intent
-        gamesocketId = byConnIntent.getStringExtra("gamesocketId")
+                    // 여기 아래에서 소켓 ID를 구분
+                    val gamesocketId = idPutUrl.substring(idPutUrl.lastIndexOf("=")+1)
 
-        // 서버 연결
-        IoSocketConn.connectIoServer(gamesocketId)
-
-        // 해당 버튼을 누를때만 보내도록 설정
-        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
-            when(event.action){
-                MotionEvent.ACTION_DOWN ->{
-                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
+                    mainIntent.putExtra("gamesocketId", gamesocketId)
+                    startActivity(mainIntent)
+                    finish()
                 }
 
-                MotionEvent.ACTION_UP -> {
-                    sensorManager.unregisterListener(gyroScopeSensorListener)
-                }
-            }
-
-            true
-        }
-
-
-        inputInviteCode.setOnClickListener {
-            showInputInviteCodePopUp()
-        }
-
-        /*
-        fileName = externalCacheDir!!.absolutePath + "/record.3gp"
-
-        if (mediaRecorder == null)
-            startRecording()
-        else
-            stopRecording()
-        recordBtn!!.setOnClickListener {
-            if (mediaRecorder != null)
-                stopRecording()
-            else startRecording()
-        }
-
-        playBtn!!.setOnClickListener {
-            if (mediaPlayer == null) {
-                startPlaying()
-            }
-            else
-                stopPlaying()
-        }
-
-         */
-        
-
-    }
-
-    //사이드 메뉴 이니셜라이저
-//    fun InitializeLayout() { //toolBar를 통해 App Bar 생성
-//        val toolbar : Toolbar = toolbar
-//        setSupportActionBar(toolbar)
-//
-//        supportActionBar.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher)
-//
-//        val drawLayout : DrawerLayout = drawer_layout
-//        val navigationView : ActionBar.NavigationMode = nav_view
-//
-//        val actionBarDrawerToggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this,
-//            drawLayout,
-//            toolbar,
-//            R.string.open,
-//            R.string.closed)
-//        drawLayout.addDrawerListener(actionBarDrawerToggle)
-//
-//    }
-
-
-    // 어플리케이션을 잠시 내렸을 경우
-    override fun onPause() {
-        super.onPause()
-
-        sensorManager.unregisterListener(gyroScopeSensorListener)
-        IoSocketConn.sendPauseMsg()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        sensorManager.unregisterListener(gyroScopeSensorListener)
-        IoSocketConn.sendStopMsg()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-
-        sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL)
-        IoSocketConn.sendRestartMsg()
-    }
-
-    override fun onDestroy() {
-        IoSocketConn.sendLogoutMsg();
-        super.onDestroy()
-    }
-
-
-
-
-    private fun showInputInviteCodePopUp(){
-        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
-
-        var dialog_listener = object: DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface?, which: Int) {
-                Log.d("EditText String", view.inputInviteCode.text.toString())
-                IoSocketConn.sendJoinToInviteCode(view.inputInviteCode.text.toString())
-
             }
         }
-
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("초대 코드 입력")
-            .setPositiveButton("확인", dialog_listener)
-            .setNegativeButton("취소",null)
-            .create()
-
-        alertDialog.setView(view)
-        alertDialog.show()
-
-
-    }
-
-    private fun startRecording() {
-        statusText!!.text = "녹음중"
-        recordBtn!!.text = "녹음 중지"
-        mediaRecorder = MediaRecorder()
-        mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder!!.setOutputFile(fileName)
-        mediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        try {
-            mediaRecorder!!.prepare()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(this, "녹음실패", Toast.LENGTH_SHORT).show()
-            statusText!!.text = "대기상태"
-            recordBtn!!.text = "녹음시작"
-            mediaRecorder = null
-        }
-        mediaRecorder!!.start()
-    }
-
-    private fun stopRecording() {
-        statusText!!.text = "대기상태"
-        recordBtn!!.text = "녹음시작"
-        if (mediaRecorder != null) {
-            mediaRecorder!!.stop()
-            mediaRecorder!!.release()
-            mediaRecorder = null
-        }
-    }
-
-    private fun startPlaying() {
-        statusText!!.text = "재생중"
-        playBtn!!.text = "재생중지"
-        mediaPlayer = MediaPlayer()
-        mediaPlayer!!.setOnCompletionListener { stopPlaying() }
-        try {
-            mediaPlayer!!.setDataSource(fileName)
-            mediaPlayer!!.prepare()
-            mediaPlayer!!.start()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(this, "재생실패", Toast.LENGTH_SHORT).show()
-            statusText!!.text = "대기상태"
-            playBtn!!.text = "재생시작"
-            mediaPlayer = null
-        }
-    }
-
-    private fun stopPlaying() {
-        statusText!!.text = "대기상태"
-        playBtn!!.text = "재생시작"
-        if (mediaPlayer != null) {
-            mediaPlayer!!.release()
-            mediaPlayer = null
+        else{
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

@@ -29,6 +29,11 @@
         <activity android:name=".MainActivity">
 
         </activity>
+
+        <activity android:name=".ControllerActivity">
+        </activity>
+        <activity android:name=".tempActivity"></activity>
+
     </application>
 
 </manifest>

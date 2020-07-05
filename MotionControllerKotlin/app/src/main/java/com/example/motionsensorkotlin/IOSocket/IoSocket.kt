@@ -18,7 +18,7 @@ import java.net.URISyntaxException
 
 
 class  IoSocket (mainActivity : Activity){
-    lateinit var mSocket: Socket
+    val mSocket: Socket = IO.socket("https://jswebgame.run.goorm.io")
     lateinit var username: String
     lateinit var gamesockId: String
     var users: Array<String> = arrayOf()
@@ -28,12 +28,12 @@ class  IoSocket (mainActivity : Activity){
     fun connectIoServer(gamesockId : String){
         this.gamesockId = gamesockId
 
-        try{
-            mSocket = IO.socket("https://jswebgame.run.goorm.io")
-
-        } catch(e: URISyntaxException){
-            Log.e("IOSocket", e.reason)
-        }
+//        try{
+//            mSocket = IO.socket("https://jswebgame.run.goorm.io")
+//
+//        } catch(e: URISyntaxException){
+//            Log.e("IOSocket", e.reason)
+//        }
 
         mSocket.connect()
         // server 측의 io.on('connection', function (socket) {-} 을 따라감
@@ -112,6 +112,11 @@ class  IoSocket (mainActivity : Activity){
         mSocket.emit("ad_joinTothePlayer1Room", joinDataJson)
     }
 
+    fun sendJoystickData(data : Double){
+
+        mSocket.emit("ad_joystickData", data)
+    }
+
     // 가속도 센서 데이터 보내는 함수
     fun sendAccData(data : JSONObject){
         mSocket.emit("ad_AccData", data)
@@ -122,12 +127,6 @@ class  IoSocket (mainActivity : Activity){
     fun sendGyroData(data : JSONObject){
         mSocket.emit("ad_GyroData",data)
     }
-
-    fun sendJoystickData(data : Double){
-
-        mSocket.emit("ad_joystickData", data)
-    }
-
 
     fun sendVoiceData(data : JSONObject){
         mSocket.emit("ad_VoiceData", data)

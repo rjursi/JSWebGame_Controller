@@ -48,12 +48,15 @@ class IntroActivity : AppCompatActivity() {
         var constlayout : ConstraintLayout = IntroLayout
         val aniGradient : AnimationDrawable =constlayout.background as AnimationDrawable
 
-
-
-
         aniGradient.setEnterFadeDuration(2000)
         aniGradient.setExitFadeDuration(4500)
         aniGradient.start()
+
+        //깜빡이게
+        var alpha : Animation = AnimationUtils.loadAnimation(this,R.anim.alpha)
+        AniSet.addAnimation(alpha)
+        PleaseTab.startAnimation(AniSet)
+
         uniqueID = introPart.getAppInstanceId()
 
 
@@ -70,14 +73,11 @@ class IntroActivity : AppCompatActivity() {
 //        },DURATION)
 
 
-        //깜빡이게
-        var alpha : Animation = AnimationUtils.loadAnimation(this,R.anim.alpha)
-        AniSet.addAnimation(alpha)
-        PleaseTab.startAnimation(AniSet)
 
 
         IntroLayout.setOnClickListener {
-            val intent = Intent(this, ConnectControllerActivity::class.java)
+            //val intent = Intent(this, ConnectControllerActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(intent_uniqueID, uniqueID)
             startActivity(intent)
             finish()
