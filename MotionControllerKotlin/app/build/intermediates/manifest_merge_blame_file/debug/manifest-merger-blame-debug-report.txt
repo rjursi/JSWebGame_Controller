@@ -1,0 +1,136 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.motionsensorkotlin"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+8-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:4:5-66
+11-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:5:5-78
+12-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:5:22-76
+13    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+13-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:6:5-80
+13-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:6:22-78
+14    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+14-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:7:5-79
+14-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:7:22-77
+15    <!-- 인터넷 관련 권한 추가 -->
+16    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+16-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:9:5-70
+16-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:9:22-68
+17    <uses-permission android:name="android.permission.CAMERA" /> <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
+17-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:22:5-65
+17-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:22:22-62
+18    <uses-feature
+18-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:25:5-27:36
+19        android:name="android.hardware.camera"
+19-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:26:9-47
+20        android:required="false" />
+20-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:27:9-33
+21    <uses-feature
+21-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:28:5-30:36
+22        android:name="android.hardware.camera.front"
+22-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:29:9-53
+23        android:required="false" /> <!-- TODO replace above two with next line after Android 4.2 -->
+23-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:30:9-33
+24    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+25    <uses-feature
+25-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:33:5-35:36
+26        android:name="android.hardware.camera.autofocus"
+26-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:34:9-57
+27        android:required="false" />
+27-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:35:9-33
+28    <uses-feature
+28-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:36:5-38:36
+29        android:name="android.hardware.camera.flash"
+29-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:37:9-53
+30        android:required="false" />
+30-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:38:9-33
+31    <uses-feature
+31-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:39:5-41:36
+32        android:name="android.hardware.screen.landscape"
+32-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:40:9-57
+33        android:required="false" />
+33-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:41:9-33
+34    <uses-feature
+34-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:42:5-44:36
+35        android:name="android.hardware.wifi"
+35-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:43:9-45
+36        android:required="false" />
+36-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:44:9-33
+37
+38    <application
+38-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:11:5-37:19
+39        android:allowBackup="true"
+39-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:12:9-35
+40        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+40-->[androidx.core:core:1.0.2] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\d0faa7e87181cec61df420f7c6fa99d1\core-1.0.2\AndroidManifest.xml:22:18-86
+41        android:debuggable="true"
+42        android:extractNativeLibs="false"
+43        android:hardwareAccelerated="true"
+43-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:17:9-43
+44        android:icon="@mipmap/ic_launcher"
+44-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:13:9-43
+45        android:label="@string/app_name"
+45-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:14:9-41
+46        android:roundIcon="@mipmap/ic_launcher_round"
+46-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:15:9-54
+47        android:supportsRtl="true"
+47-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:16:9-35
+48        android:testOnly="true"
+49        android:theme="@style/AppTheme" >
+49-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:19:9-40
+50        <activity android:name="com.example.motionsensorkotlin.IntroActivity" >
+50-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:20:9-25:20
+50-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:20:19-48
+51            <intent-filter>
+51-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:21:13-24:29
+52                <action android:name="android.intent.action.MAIN" />
+52-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:22:17-69
+52-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:22:25-66
+53
+54                <category android:name="android.intent.category.LAUNCHER" />
+54-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:23:17-77
+54-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:23:27-74
+55            </intent-filter>
+56        </activity>
+57        <activity android:name="com.example.motionsensorkotlin.ConnectControllerActivity" >
+57-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:26:9-28:20
+57-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:26:19-60
+58        </activity>
+59        <activity android:name="com.example.motionsensorkotlin.MainActivity" >
+59-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:29:9-31:20
+59-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:29:19-47
+60        </activity>
+61        <activity android:name="com.example.motionsensorkotlin.ControllerActivity" >
+61-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:33:9-34:20
+61-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:33:19-53
+62        </activity>
+63        <activity android:name="com.example.motionsensorkotlin.tempActivity" />
+63-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:35:9-59
+63-->D:\git_repo\JSWebGame_Controller\MotionControllerKotlin\app\src\main\AndroidManifest.xml:35:19-47
+64        <activity
+64-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:47:9-53:63
+65            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+65-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:48:13-74
+66            android:clearTaskOnLaunch="true"
+66-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:49:13-45
+67            android:screenOrientation="sensorLandscape"
+67-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:50:13-56
+68            android:stateNotNeeded="true"
+68-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:51:13-42
+69            android:theme="@style/zxing_CaptureTheme"
+69-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:52:13-54
+70            android:windowSoftInputMode="stateAlwaysHidden" />
+70-->[com.journeyapps:zxing-android-embedded:3.6.0] C:\Users\dfg37\.gradle\caches\transforms-2\files-2.1\da354d11ec6a26bad8820cdd8af876a1\jetified-zxing-android-embedded-3.6.0\AndroidManifest.xml:53:13-60
+71    </application>
+72
+73</manifest>
