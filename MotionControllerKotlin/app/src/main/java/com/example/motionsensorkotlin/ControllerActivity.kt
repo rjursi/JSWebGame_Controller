@@ -51,7 +51,7 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
 
     lateinit var gamesocketId : String
-    var IoSocketConn : IoSocket = IoSocket(this)
+    val IoSocketConn : IoSocket = IoSocket(this)
     var accelerometerSensorListener : AccelerometerSensorListener =
         AccelerometerSensorListener(
             IoSocketConn

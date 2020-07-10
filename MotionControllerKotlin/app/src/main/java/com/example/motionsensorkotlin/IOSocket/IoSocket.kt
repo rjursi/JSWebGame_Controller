@@ -18,7 +18,10 @@ import java.net.URISyntaxException
 
 
 class  IoSocket (mainActivity : Activity){
-    val mSocket: Socket = IO.socket("https://jswebgame.run.goorm.io")
+    val opts = IO.Options()
+
+
+    lateinit var mSocket: Socket
     lateinit var username: String
     lateinit var gamesockId: String
     var users: Array<String> = arrayOf()
@@ -27,6 +30,9 @@ class  IoSocket (mainActivity : Activity){
 
     fun connectIoServer(gamesockId : String){
         this.gamesockId = gamesockId
+        opts.reconnection = false
+        mSocket = IO.socket("https://jswebgame.run.goorm.io", opts)
+
 
 //        try{
 //            mSocket = IO.socket("https://jswebgame.run.goorm.io")
