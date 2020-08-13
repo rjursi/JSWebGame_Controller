@@ -30,19 +30,27 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
+import com.example.motionsensorkotlin.webRTC.CustomPeerConnectionObserver
+import com.example.motionsensorkotlin.webRTC.CustomSdpObserver
+import com.example.motionsensorkotlin.webRTC.SignallingClient
+import com.example.motionsensorkotlin.webRTC.temp
 import kotlinx.android.synthetic.main.activity_controller.*
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
+import org.json.JSONObject
+import org.webrtc.IceCandidate
+import org.webrtc.MediaStream
+import org.webrtc.PeerConnection
+import org.webrtc.SessionDescription
 import java.io.IOException
 
 
-class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
+class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener,SignallingClient.SignalingInterface {
     // : - AppCompatActivity 클래스를 상속을 한다는 의미 (클래스 앞에 붙을 경우)
 
     private val sensorManager by lazy{
         // 지연된 초기화 사용
         getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
         // sensorManager 변수를 처음 사용할 때 getSystemService() 메서드로 SensorManager 객체를 얻음
     }
 
@@ -61,6 +69,8 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         GyroScopeSensorListener(
             IoSocketConn
         )
+
+    var webRTCInstance : temp = temp(this)
 
     override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
         var directionData : Double = 0.0
@@ -122,11 +132,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         }
     }
 
-    var texto: TextView? = null
-
-
-
-
 
 
 
@@ -152,6 +157,7 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
         // 서버 연결
         IoSocketConn.connectIoServer(gamesocketId)
+        IoSocketConn.temp = temp(this)
 
         // 해당 버튼을 누를때만 보내도록 설정
         accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
@@ -173,51 +179,20 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             showInputInviteCodePopUp()
         }
 
-        /*
-        fileName = externalCacheDir!!.absolutePath + "/record.3gp"
-
-        if (mediaRecorder == null)
-            startRecording()
-        else
-            stopRecording()
-        recordBtn!!.setOnClickListener {
-            if (mediaRecorder != null)
-                stopRecording()
-            else startRecording()
-        }
-
-        playBtn!!.setOnClickListener {
-            if (mediaPlayer == null) {
-                startPlaying()
-            }
-            else
-                stopPlaying()
-        }
-
-         */
 
 
     }
 
-    //사이드 메뉴 이니셜라이저
-//    fun InitializeLayout() { //toolBar를 통해 App Bar 생성
-//        val toolbar : Toolbar = toolbar
-//        setSupportActionBar(toolbar)
-//
-//        supportActionBar.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher)
-//
-//        val drawLayout : DrawerLayout = drawer_layout
-//        val navigationView : ActionBar.NavigationMode = nav_view
-//
-//        val actionBarDrawerToggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this,
-//            drawLayout,
-//            toolbar,
-//            R.string.open,
-//            R.string.closed)
-//        drawLayout.addDrawerListener(actionBarDrawerToggle)
-//
-//    }
+
+    fun abc(){
+        webRTCInstance.setIceServer()
+        //IoSocketConn 초기화 이후에
+        SignallingClient.init(this,IoSocketConn)
+        webRTCInstance.start()
+        if(webRTCInstance.isStart)
+            onTryToStart()
+
+    }
 
 
     // 어플리케이션을 잠시 내렸을 경우
@@ -248,8 +223,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     }
 
 
-
-
     private fun showInputInviteCodePopUp(){
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
@@ -274,6 +247,121 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
     }
 
+    private fun createPeerConnection() {
+        val rtcConfig = PeerConnection.RTCConfiguration(webRTCInstance.iceServers)
+        // TCP candidates are only useful when connecting to a server that supports
+        // ICE-TCP.
+        rtcConfig.tcpCandidatePolicy = PeerConnection.TcpCandidatePolicy.DISABLED
+        rtcConfig.bundlePolicy = PeerConnection.BundlePolicy.MAXBUNDLE
+        rtcConfig.rtcpMuxPolicy = PeerConnection.RtcpMuxPolicy.REQUIRE
+        rtcConfig.continualGatheringPolicy = PeerConnection.ContinualGatheringPolicy.GATHER_CONTINUALLY
+        // Use ECDSA encryption.
+        rtcConfig.keyType = PeerConnection.KeyType.ECDSA
 
+        webRTCInstance.localPeer = webRTCInstance.peerConnectionFactory.createPeerConnection(rtcConfig, object : CustomPeerConnectionObserver("localPeerCreation") {
+            override fun onIceCandidate(iceCandidate: IceCandidate) {
+                super.onIceCandidate(iceCandidate)
+                onIceCandidateReceived(iceCandidate)
+            }
+
+            override fun onAddStream(mediaStream: MediaStream) {
+                //showToast("Received Remote stream")
+                super.onAddStream(mediaStream)
+                gotRemoteStream(mediaStream)
+            }
+        })
+
+        addStreamToLocalPeer()
+    }
+
+    override fun onRemoteHangUp(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onOfferReceived(data: JSONObject) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAnswerReceived(data: JSONObject) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /**
+     * Received local ice candidate. Send it to remote peer through signalling for negotiation
+     */
+    fun onIceCandidateReceived(iceCandidate: IceCandidate) {
+        //we have received ice candidate. We can set it to the other peer.
+        SignallingClient.emitIceCandidate(iceCandidate)
+    }
+
+    override fun onIceCandidateReceived(data: JSONObject) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTryToStart() {
+        runOnUiThread {
+            if (!SignallingClient.isStarted && webRTCInstance.localVideoTrack != null && SignallingClient.isChannelReady) {
+                createPeerConnection()
+                SignallingClient.isStarted = true
+                if (SignallingClient.isInitiator) {
+                    doCall()
+                }
+            }
+        }
+    }
+
+    override fun onCreatedRoom() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onJoinedRoom() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNewPeerJoined() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+    /**
+     * Received remote peer's media stream. we will get the first video track and render it
+     */
+    private fun gotRemoteStream(stream: MediaStream) {
+        //we have remote video stream. add to the renderer.
+        val videoTrack = stream.videoTracks[0]
+        runOnUiThread {
+            try {
+                //val remoteRenderer = VideoRenderer(remoteVideoView)
+                webRTCInstance.remoteVideoView?.visibility = View.VISIBLE
+                //videoTrack.addRenderer(remoteRenderer)
+                videoTrack.addSink(webRTCInstance.remoteVideoView)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+    /**
+     * Adding the stream to the localpeer
+     */
+    private fun addStreamToLocalPeer() {
+        //creating local mediastream
+        val stream = webRTCInstance.peerConnectionFactory.createLocalMediaStream("102")
+        stream.addTrack(webRTCInstance.localAudioTrack)
+        stream.addTrack(webRTCInstance.localVideoTrack)
+        webRTCInstance.localPeer!!.addStream(stream)
+    }
+
+    private fun doCall() {
+        webRTCInstance.localPeer!!.createOffer(object : CustomSdpObserver("localCreateOffer") {
+            override fun onCreateSuccess(sessionDescription: SessionDescription) {
+                super.onCreateSuccess(sessionDescription)
+                webRTCInstance.localPeer!!.setLocalDescription(CustomSdpObserver("localSetLocalDesc"), sessionDescription)
+                Log.d("onCreateSuccess", "SignallingClient emit ")
+                SignallingClient.emitMessage(sessionDescription)
+            }
+        }, webRTCInstance.sdpConstraints)
+    }
 
 }
