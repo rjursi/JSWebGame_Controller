@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -83,7 +84,9 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {}
+
     override fun onTouch(v: View, e: MotionEvent): Boolean {
+        Log.d("onTouchEvent : ", "JoystickTouched")
         if (v == this) {
             if (e.action != MotionEvent.ACTION_UP) {
                 val displacement = Math.sqrt(

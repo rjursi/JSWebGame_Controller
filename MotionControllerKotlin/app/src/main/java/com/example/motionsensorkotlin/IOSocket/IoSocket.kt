@@ -2,22 +2,16 @@ package com.example.motionsensorkotlin.IOSocket
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
-import android.telecom.Call
 import android.util.Log
-import android.view.animation.AccelerateInterpolator
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.finishAffinity
-import com.example.motionsensorkotlin.MainActivity
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import kotlinx.coroutines.delay
 import org.json.JSONObject
-import java.net.URISyntaxException
 
 
-class  IoSocket (mainActivity : Activity){
+
+class  IoSocket (controllerActivity : Activity){
     val opts = IO.Options()
 
 
@@ -25,8 +19,8 @@ class  IoSocket (mainActivity : Activity){
     lateinit var username: String
     lateinit var gamesockId: String
     var users: Array<String> = arrayOf()
-    lateinit var inviteCode : String
-    private var mainActivity : Activity = mainActivity
+    var inviteCode : String = ""
+
 
     fun connectIoServer(gamesockId : String){
         this.gamesockId = gamesockId
@@ -77,8 +71,8 @@ class  IoSocket (mainActivity : Activity){
     }
 
     private val onDisconnected : Emitter.Listener = Emitter.Listener {
-        mainActivity.runOnUiThread(Runnable {
-            val builder = AlertDialog.Builder(mainActivity)
+        controllerActivity.runOnUiThread(Runnable {
+            val builder = AlertDialog.Builder(controllerActivity)
 
             // Toast.makeText(mainActivity, "Server Disconnected", Toast.LENGTH_LONG).show()
             builder.setTitle("웹 게임 페이지 종료")
@@ -86,9 +80,17 @@ class  IoSocket (mainActivity : Activity){
 
             builder.setPositiveButton("Yes"){dialog, which ->
 
+                controllerActivity.moveTaskToBack(true)
+                controllerActivity.finishAndRemoveTask()
+
+                android.os.Process.killProcess(android.os.Process.myPid())
+
+                /*
                 finishAffinity(mainActivity)
                 System.runFinalization()
                 System.exit(0)
+
+                 */
             }
 
             val dialog: AlertDialog = builder.create()
@@ -121,6 +123,7 @@ class  IoSocket (mainActivity : Activity){
     fun sendJoystickData(data : Double){
 
         mSocket.emit("ad_joystickData", data)
+
     }
 
     // 가속도 센서 데이터 보내는 함수

@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.connectCtrlBtn
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
+import kotlinx.android.synthetic.main.dialog_qrdata.view.*
 import java.io.IOException
 
 
@@ -69,6 +70,41 @@ class MainActivity : AppCompatActivity(){
             IntentIntegrator(this).initiateScan()
         }
 
+        devTestBtn.setOnClickListener{
+            showQRDataPopUp()
+        }
+
+
+    }
+
+
+    private fun showQRDataPopUp(){
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.dialog_qrdata, null);
+
+        var dialog_listener = object: DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                Log.d("EditText String", view.inputQrData.text.toString())
+                var qrdata = view.inputQrData.text.toString()
+                val mainIntent = Intent(applicationContext, ControllerActivity::class.java)
+
+                // 여기 아래에서 소켓 ID를 구분
+                val gamesocketId = qrdata.substring(qrdata.lastIndexOf("=")+1)
+
+                mainIntent.putExtra("gamesocketId", gamesocketId)
+                startActivity(mainIntent)
+                finish()
+            }
+        }
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("QR 데이터 입력")
+            .setPositiveButton("확인", dialog_listener)
+            .setNegativeButton("취소",null)
+            .create()
+
+        alertDialog.setView(view)
+        alertDialog.show()
 
 
     }

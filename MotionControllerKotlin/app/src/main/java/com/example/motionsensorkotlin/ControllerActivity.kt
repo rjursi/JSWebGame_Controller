@@ -12,6 +12,7 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -33,6 +34,8 @@ import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
 import kotlinx.android.synthetic.main.activity_controller.*
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import java.io.IOException
 
 
@@ -48,10 +51,15 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
     // 앞 인트로 Activity 에서 보낸 User ID 값을 받기 위한 인텐트 설정
     lateinit var byConnIntent: Intent
-
-
     lateinit var gamesocketId : String
+    var isSending : Boolean = false
+
+
+
+
     val IoSocketConn : IoSocket = IoSocket(this)
+
+    val joystickDataSender : JoystickDataSender = JoystickDataSender(IoSocketConn)
     var accelerometerSensorListener : AccelerometerSensorListener =
         AccelerometerSensorListener(
             IoSocketConn
@@ -62,8 +70,12 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             IoSocketConn
         )
 
+    var preDirectionData : Double = 0.0
+
+
     override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
         var directionData : Double = 0.0
+
         when (source) {
             R.id.joystickLeft ->
             {
@@ -75,7 +87,8 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
                         tvLog.text = "1.5시 방향"
                         directionData = 1.5
                     }
-                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent > 0.0 && xPercent <= 1.0)) {
+
+                    if ((yPercent <= 0.5 && yPercent >= -0.5) && (xPercent > 0.0 && xPercent <= 1.0)) {
                         tvLog.text = "3시방향"
                         directionData = 3.0
                     }
@@ -83,7 +96,7 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
                         tvLog.text = "4.5시 방향"
                         directionData = 4.5
                     }
-                    if ((yPercent > 0.0 && yPercent <= 1.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
+                    if ((yPercent > 0.0 && yPercent <= 1.0) && (xPercent >= -0.5 && xPercent <= 0.5)) {
                         tvLog.text = "6시방향"
                         directionData = 6.0
                     }
@@ -91,25 +104,35 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
                         tvLog.text = "7.5시 방향"
                         directionData = 7.5
                     }
-                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent < 0.0 && xPercent >= -1.0)) {
+                    if ((yPercent <= 0.5 && yPercent >= -0.5) && (xPercent < 0.0 && xPercent >= -1.0)) {
                         tvLog.text = "9시방향"
                         directionData = 9.0
                     }
-
                     if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > -1.0 && xPercent < 0.0)) {
                         tvLog.text = "10.5시 방향"
                         directionData = 10.5
                     }
-                    if ((yPercent >= -1.0 && yPercent < 0.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
+                    if ((yPercent >= -1.0 && yPercent < 0.0) && (xPercent >= -0.5 && xPercent <= 0.5)) {
                         tvLog.text = "12시방향"
                         directionData = 12.0
                     }
 
 
-                    Log.d("DirectionData","Direction : $directionData")
+
+
+
+
+
+                    Log.d("DirectionData", "Direction : $directionData")
 
                     directionData = String.format("%.2f", directionData).toDouble()
-                    IoSocketConn.sendJoystickData(directionData)
+                }else{
+                    // 여기는 그냥 터치만 했을 경우 , 즉 상호작용용
+                    tvLog.text = "상호작용";
+                    directionData = 0.5
+                    Log.d("DirectionData", "Direction : $directionData")
+
+                    directionData = String.format("%.2f", directionData).toDouble()
 
                 }
 
@@ -117,16 +140,21 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
                 if (yPercent == 0F && xPercent == 0F)
                 {
                     tvLog.text = ""
+                    directionData = 0.0
                 }
+
+                joystickDataSender.nowDirectionData = directionData
+                joystickDataSender.coroutine_runningCheck()
+
+            }
+
+
+
             }
         }
-    }
+
 
     var texto: TextView? = null
-
-
-
-
 
 
 
@@ -150,8 +178,20 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         byConnIntent = intent
         gamesocketId = byConnIntent.getStringExtra("gamesocketId")
 
+
+
         // 서버 연결
         IoSocketConn.connectIoServer(gamesocketId)
+
+        // 초대코드 서버로부터 받을때까지 대기하고 받으면 실행하는 코드
+        while(true){
+            if(IoSocketConn.inviteCode === ""){
+                continue
+            }else{
+                viewMyInviteCode.setText(IoSocketConn.inviteCode);
+                break
+            }
+        }
 
         // 해당 버튼을 누를때만 보내도록 설정
         accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
@@ -172,52 +212,7 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         inputInviteCode.setOnClickListener {
             showInputInviteCodePopUp()
         }
-
-        /*
-        fileName = externalCacheDir!!.absolutePath + "/record.3gp"
-
-        if (mediaRecorder == null)
-            startRecording()
-        else
-            stopRecording()
-        recordBtn!!.setOnClickListener {
-            if (mediaRecorder != null)
-                stopRecording()
-            else startRecording()
-        }
-
-        playBtn!!.setOnClickListener {
-            if (mediaPlayer == null) {
-                startPlaying()
-            }
-            else
-                stopPlaying()
-        }
-
-         */
-
-
     }
-
-    //사이드 메뉴 이니셜라이저
-//    fun InitializeLayout() { //toolBar를 통해 App Bar 생성
-//        val toolbar : Toolbar = toolbar
-//        setSupportActionBar(toolbar)
-//
-//        supportActionBar.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher)
-//
-//        val drawLayout : DrawerLayout = drawer_layout
-//        val navigationView : ActionBar.NavigationMode = nav_view
-//
-//        val actionBarDrawerToggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this,
-//            drawLayout,
-//            toolbar,
-//            R.string.open,
-//            R.string.closed)
-//        drawLayout.addDrawerListener(actionBarDrawerToggle)
-//
-//    }
 
 
     // 어플리케이션을 잠시 내렸을 경우

@@ -47,6 +47,21 @@
 
         />
 
+
+
+    <TextView
+        android:id="@+id/viewMyInviteCode"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        app:layout_constraintRight_toLeftOf="@id/accTestBtn"
+        app:layout_constraintTop_toTopOf="@id/accTestBtn"
+
+        />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
