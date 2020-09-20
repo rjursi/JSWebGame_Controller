@@ -45,7 +45,7 @@ import org.webrtc.SessionDescription
 import java.io.IOException
 
 
-class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener,SignallingClient.SignalingInterface {
+class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     // : - AppCompatActivity 클래스를 상속을 한다는 의미 (클래스 앞에 붙을 경우)
 
     private val sensorManager by lazy{
@@ -70,7 +70,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener,Si
             IoSocketConn
         )
 
-    var webRTCInstance : temp = temp(this)
 
     override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
         var directionData : Double = 0.0
@@ -184,17 +183,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener,Si
     }
 
 
-    fun abc(){
-        webRTCInstance.setIceServer()
-        //IoSocketConn 초기화 이후에
-        SignallingClient.init(this,IoSocketConn)
-        webRTCInstance.start()
-        if(webRTCInstance.isStart)
-            onTryToStart()
-
-    }
-
-
     // 어플리케이션을 잠시 내렸을 경우
     override fun onPause() {
         super.onPause()
@@ -245,123 +233,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener,Si
         alertDialog.show()
 
 
-    }
-
-    private fun createPeerConnection() {
-        val rtcConfig = PeerConnection.RTCConfiguration(webRTCInstance.iceServers)
-        // TCP candidates are only useful when connecting to a server that supports
-        // ICE-TCP.
-        rtcConfig.tcpCandidatePolicy = PeerConnection.TcpCandidatePolicy.DISABLED
-        rtcConfig.bundlePolicy = PeerConnection.BundlePolicy.MAXBUNDLE
-        rtcConfig.rtcpMuxPolicy = PeerConnection.RtcpMuxPolicy.REQUIRE
-        rtcConfig.continualGatheringPolicy = PeerConnection.ContinualGatheringPolicy.GATHER_CONTINUALLY
-        // Use ECDSA encryption.
-        rtcConfig.keyType = PeerConnection.KeyType.ECDSA
-
-        webRTCInstance.localPeer = webRTCInstance.peerConnectionFactory.createPeerConnection(rtcConfig, object : CustomPeerConnectionObserver("localPeerCreation") {
-            override fun onIceCandidate(iceCandidate: IceCandidate) {
-                super.onIceCandidate(iceCandidate)
-                onIceCandidateReceived(iceCandidate)
-            }
-
-            override fun onAddStream(mediaStream: MediaStream) {
-                //showToast("Received Remote stream")
-                super.onAddStream(mediaStream)
-                gotRemoteStream(mediaStream)
-            }
-        })
-
-        addStreamToLocalPeer()
-    }
-
-    override fun onRemoteHangUp(msg: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onOfferReceived(data: JSONObject) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onAnswerReceived(data: JSONObject) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    /**
-     * Received local ice candidate. Send it to remote peer through signalling for negotiation
-     */
-    fun onIceCandidateReceived(iceCandidate: IceCandidate) {
-        //we have received ice candidate. We can set it to the other peer.
-        SignallingClient.emitIceCandidate(iceCandidate)
-    }
-
-    override fun onIceCandidateReceived(data: JSONObject) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onTryToStart() {
-        runOnUiThread {
-            if (!SignallingClient.isStarted && webRTCInstance.localVideoTrack != null && SignallingClient.isChannelReady) {
-                createPeerConnection()
-                SignallingClient.isStarted = true
-                if (SignallingClient.isInitiator) {
-                    doCall()
-                }
-            }
-        }
-    }
-
-    override fun onCreatedRoom() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onJoinedRoom() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onNewPeerJoined() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-
-    /**
-     * Received remote peer's media stream. we will get the first video track and render it
-     */
-    private fun gotRemoteStream(stream: MediaStream) {
-        //we have remote video stream. add to the renderer.
-        val videoTrack = stream.videoTracks[0]
-        runOnUiThread {
-            try {
-                //val remoteRenderer = VideoRenderer(remoteVideoView)
-                webRTCInstance.remoteVideoView?.visibility = View.VISIBLE
-                //videoTrack.addRenderer(remoteRenderer)
-                videoTrack.addSink(webRTCInstance.remoteVideoView)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-    }
-
-    /**
-     * Adding the stream to the localpeer
-     */
-    private fun addStreamToLocalPeer() {
-        //creating local mediastream
-        val stream = webRTCInstance.peerConnectionFactory.createLocalMediaStream("102")
-        stream.addTrack(webRTCInstance.localAudioTrack)
-        stream.addTrack(webRTCInstance.localVideoTrack)
-        webRTCInstance.localPeer!!.addStream(stream)
-    }
-
-    private fun doCall() {
-        webRTCInstance.localPeer!!.createOffer(object : CustomSdpObserver("localCreateOffer") {
-            override fun onCreateSuccess(sessionDescription: SessionDescription) {
-                super.onCreateSuccess(sessionDescription)
-                webRTCInstance.localPeer!!.setLocalDescription(CustomSdpObserver("localSetLocalDesc"), sessionDescription)
-                Log.d("onCreateSuccess", "SignallingClient emit ")
-                SignallingClient.emitMessage(sessionDescription)
-            }
-        }, webRTCInstance.sdpConstraints)
     }
 
 }
