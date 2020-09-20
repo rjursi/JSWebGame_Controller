@@ -11,16 +11,12 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.finishAffinity
 import com.example.motionsensorkotlin.MainActivity
-import com.example.motionsensorkotlin.webRTC.SignallingClient
 
-import com.example.motionsensorkotlin.webRTC.temp
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException
 import org.json.JSONObject
-import org.webrtc.IceCandidate
-import org.webrtc.SessionDescription
 import java.net.URISyntaxException
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
@@ -44,9 +40,7 @@ class IoSocket (mainActivity : Activity) {
 
     private var roomName:String?=null
 
-//////////////////////////////////
-
-    lateinit var temp : temp
+    //////////////////////////////////
 
     //////////////////////////////////
 
@@ -75,7 +69,7 @@ class IoSocket (mainActivity : Activity) {
     var onInvalidInviteCode : Emitter.Listener = Emitter.Listener { args ->
         val serverErrorMsg = args[0] as String
 
-        Log.d("serverErrorMsg 1 : ", serverErrorMsg)
+        Log.d("serverErrorMsg : ", serverErrorMsg)
     }
 
 
@@ -153,6 +147,10 @@ class IoSocket (mainActivity : Activity) {
 
     fun sendGyroData(data : JSONObject){
         mSocket.emit("ad_GyroData",data)
+    }
+
+    fun sendChatMessage(message: String){
+        mSocket.emit("ad_ChatMessage",message)
     }
 
     fun sendLogoutMsg(){
