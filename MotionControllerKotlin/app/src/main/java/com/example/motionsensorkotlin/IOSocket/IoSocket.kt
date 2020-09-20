@@ -75,7 +75,7 @@ class IoSocket (mainActivity : Activity) {
     var onInvalidInviteCode : Emitter.Listener = Emitter.Listener { args ->
         val serverErrorMsg = args[0] as String
 
-        Log.d("serverErrorMsg : ", serverErrorMsg)
+        Log.d("serverErrorMsg 1 : ", serverErrorMsg)
     }
 
 
