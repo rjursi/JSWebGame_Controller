@@ -32,11 +32,13 @@ import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
 import kotlinx.android.synthetic.main.activity_controller.*
+import kotlinx.android.synthetic.main.activity_controller.view.*
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import java.io.IOException
+
 
 
 class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
@@ -45,7 +47,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     private val sensorManager by lazy{
         // 지연된 초기화 사용
         getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
         // sensorManager 변수를 처음 사용할 때 getSystemService() 메서드로 SensorManager 객체를 얻음
     }
 
@@ -69,6 +70,7 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         GyroScopeSensorListener(
             IoSocketConn
         )
+    lateinit var dialogManager : DialogManager
 
     var preDirectionData : Double = 0.0
 
@@ -149,14 +151,11 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             }
 
 
-
             }
         }
 
 
     var texto: TextView? = null
-
-
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -178,6 +177,29 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         byConnIntent = intent
         gamesocketId = byConnIntent.getStringExtra("gamesocketId")
 
+        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN ->{
+                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    sensorManager.unregisterListener(gyroScopeSensorListener)
+                }
+            }
+
+            true
+        }
+
+        controller_btn_invite.setOnClickListener {
+            dialogManager.makeInviteCodeDialog()
+        }
+
+        controller_btn_chat.setOnClickListener {
+            dialogManager.makeSendingMessageDialog()
+        }
+
+        dialogManager = DialogManager(this, IoSocketConn)
 
 
         // 서버 연결
@@ -194,24 +216,7 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         }
 
         // 해당 버튼을 누를때만 보내도록 설정
-        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
-            when(event.action){
-                MotionEvent.ACTION_DOWN ->{
-                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
-                }
 
-                MotionEvent.ACTION_UP -> {
-                    sensorManager.unregisterListener(gyroScopeSensorListener)
-                }
-            }
-
-            true
-        }
-
-
-        inputInviteCode.setOnClickListener {
-            showInputInviteCodePopUp()
-        }
     }
 
 
@@ -243,16 +248,14 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     }
 
 
-
-
     private fun showInputInviteCodePopUp(){
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
 
         var dialog_listener = object: DialogInterface.OnClickListener {
             override fun onClick(dialog: DialogInterface?, which: Int) {
-                Log.d("EditText String", view.inputInviteCode.text.toString())
-                IoSocketConn.sendJoinToInviteCode(view.inputInviteCode.text.toString())
+                Log.d("EditText String", view.controller_btn_invite.text.toString())
+                IoSocketConn.sendJoinToInviteCode(view.controller_btn_invite.text.toString())
 
             }
         }
@@ -268,7 +271,5 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
 
     }
-
-
 
 }

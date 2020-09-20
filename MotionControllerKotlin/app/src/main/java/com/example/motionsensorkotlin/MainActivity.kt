@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(){
                     Toast.makeText(this, "Wrong URL value", Toast.LENGTH_SHORT).show()
                 }
                 else{
-                    //var mainIntent = Intent(this, MainActivity::class.java)
+
                     val mainIntent = Intent(applicationContext, ControllerActivity::class.java)
 
                     // 여기 아래에서 소켓 ID를 구분

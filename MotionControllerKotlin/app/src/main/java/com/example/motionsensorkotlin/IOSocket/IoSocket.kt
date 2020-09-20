@@ -1,5 +1,6 @@
 package com.example.motionsensorkotlin.IOSocket
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.util.Log
@@ -8,10 +9,29 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import kotlinx.coroutines.delay
 import org.json.JSONObject
-
+import android.view.animation.AccelerateInterpolator
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.finishAffinity
+import com.example.motionsensorkotlin.MainActivity
+import org.json.JSONException
+import java.net.URISyntaxException
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+import java.security.cert.X509Certificate
+import java.util.*
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 
 class  IoSocket (controllerActivity : Activity){
+
+
+
+
+// class IoSocket (mainActivity : Activity) {
+
     val opts = IO.Options()
 
 
@@ -19,14 +39,21 @@ class  IoSocket (controllerActivity : Activity){
     lateinit var username: String
     lateinit var gamesockId: String
     var users: Array<String> = arrayOf()
-    var inviteCode : String = ""
 
+    var inviteCode : String = ""    //roomName
+    // private var mainActivity : Activity = mainActivity
+
+
+    private var roomName:String?=null
+
+    //////////////////////////////////
+
+    //////////////////////////////////
 
     fun connectIoServer(gamesockId : String){
         this.gamesockId = gamesockId
         opts.reconnection = false
         mSocket = IO.socket("https://jswebgame.run.goorm.io", opts)
-
 
 //        try{
 //            mSocket = IO.socket("https://jswebgame.run.goorm.io")
@@ -38,7 +65,6 @@ class  IoSocket (controllerActivity : Activity){
         mSocket.connect()
         // server 측의 io.on('connection', function (socket) {-} 을 따라감
         // mSocket.emit('connection',socket)을 한 것 과 동일하다고 할 수 있음
-
 
         mSocket.on(Socket.EVENT_CONNECT, onConnect)
         // 위 연결이 성공적으로 연결이 되면 server 측에서 "connect" 이벤트를 발생
@@ -108,6 +134,7 @@ class  IoSocket (controllerActivity : Activity){
 
         Log.d("Received InviteCode", inviteCode)
         Log.d("Message : " , "Get InviteCode Success")
+        roomName=inviteCode
     }
 
     fun sendJoinToInviteCode(inviteCode : String){
@@ -137,26 +164,34 @@ class  IoSocket (controllerActivity : Activity){
         mSocket.emit("ad_GyroData",data)
     }
 
-    fun sendVoiceData(data : JSONObject){
-        mSocket.emit("ad_VoiceData", data)
+    fun sendChatMessage(message: String){
+        mSocket.emit("ad_ChatMessage", message)
     }
 
     fun sendLogoutMsg(){
         mSocket.emit("ad_logout", gamesockId)
     }
 
-
     fun sendPauseMsg(){
         mSocket.emit("ad_pause", gamesockId)
     }
-
 
     fun sendStopMsg(){
         mSocket.emit("ad_stop", gamesockId)
     }
 
-
     fun sendRestartMsg(){
         mSocket.emit("ad_restart", gamesockId)
     }
+
+
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
+
+
+
+
+
+
+
 }
