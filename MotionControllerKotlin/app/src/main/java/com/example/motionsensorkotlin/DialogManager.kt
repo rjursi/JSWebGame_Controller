@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 
 
 class DialogManager(context: Context, Socket: IoSocket)  {
 
+    val context = context
     private val dlg = Dialog(context)   //부모 액티비티의 context 가 들어감
     val IoSocketConn =Socket
 
@@ -34,7 +36,8 @@ class DialogManager(context: Context, Socket: IoSocket)  {
         var btnCancel = dlg.findViewById<Button>(R.id.message_btnCancel)
         var txtMessage = dlg.findViewById<EditText>(R.id.message_edit)
         btnSend.setOnClickListener {
-            IoSocketConn.sendChatMessage(txtMessage.toString())
+            IoSocketConn.sendChatMessage(txtMessage.text.toString())
+            Toast.makeText(context,txtMessage.text.toString(),Toast.LENGTH_LONG).show()
             dlg.dismiss()
         }
         btnCancel.setOnClickListener {
@@ -56,7 +59,8 @@ class DialogManager(context: Context, Socket: IoSocket)  {
         var txtInviteCode = dlg.findViewById<EditText>(R.id.invite_edit)
 
         btnSend.setOnClickListener {
-            IoSocketConn.sendJoinToInviteCode(txtInviteCode.toString())
+            IoSocketConn.sendJoinToInviteCode(txtInviteCode.text.toString())
+            Toast.makeText(context,txtInviteCode.text.toString(),Toast.LENGTH_LONG).show()
             dlg.dismiss()
         }
         btnCancel.setOnClickListener { dlg.dismiss() }

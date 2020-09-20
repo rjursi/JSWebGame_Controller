@@ -59,7 +59,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             IoSocketConn
         )
 
-
     override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
         var directionData : Double = 0.0
         when (source) {
@@ -103,7 +102,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
                         directionData = 12.0
                     }
 
-
                     Log.d("DirectionData","Direction : $directionData")
 
                     directionData = String.format("%.2f", directionData).toDouble()
@@ -119,9 +117,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             }
         }
     }
-
-
-
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,13 +156,13 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             true
         }
 
+        //초대코드와 채팅메시지 dialog관리를 위한 매니저 객체
         var dialogManager = DialogManager(this,IoSocketConn)
-
 
         controller_btn_invite.setOnClickListener {
             dialogManager.makeInvideCodeDialog()
         }
-        controller_btn_invite.setOnClickListener {
+        controller_btn_chat.setOnClickListener {
             dialogManager.makeSendingMessageDialog()
         }
 
