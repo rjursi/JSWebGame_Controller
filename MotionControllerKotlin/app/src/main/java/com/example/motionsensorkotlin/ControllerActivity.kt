@@ -30,20 +30,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
-import com.example.motionsensorkotlin.webRTC.CustomPeerConnectionObserver
-import com.example.motionsensorkotlin.webRTC.CustomSdpObserver
-import com.example.motionsensorkotlin.webRTC.SignallingClient
-import com.example.motionsensorkotlin.webRTC.temp
 import kotlinx.android.synthetic.main.activity_controller.*
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
-import org.json.JSONObject
-import org.webrtc.IceCandidate
-import org.webrtc.MediaStream
-import org.webrtc.PeerConnection
-import org.webrtc.SessionDescription
-import java.io.IOException
-
 
 class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     // : - AppCompatActivity 클래스를 상속을 한다는 의미 (클래스 앞에 붙을 경우)
@@ -156,7 +145,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
         // 서버 연결
         IoSocketConn.connectIoServer(gamesocketId)
-        IoSocketConn.temp = temp(this)
 
         // 해당 버튼을 누를때만 보내도록 설정
         accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
