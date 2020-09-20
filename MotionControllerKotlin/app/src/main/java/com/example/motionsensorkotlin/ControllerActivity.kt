@@ -161,10 +161,17 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             true
         }
 
+        var dialogManager = DialogManager(this,IoSocketConn)
 
-        inputInviteCode.setOnClickListener {
-            showInputInviteCodePopUp()
+
+        controller_btn_invite.setOnClickListener {
+            dialogManager.makeInvideCodeDialog()
         }
+        controller_btn_invite.setOnClickListener {
+            dialogManager.makeSendingMessageDialog()
+        }
+
+
 
 
 
@@ -199,28 +206,28 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     }
 
 
-    private fun showInputInviteCodePopUp(){
-        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
-
-        var dialog_listener = object: DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface?, which: Int) {
-                Log.d("EditText String", view.inputInviteCode.text.toString())
-                IoSocketConn.sendJoinToInviteCode(view.inputInviteCode.text.toString())
-
-            }
-        }
-
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("초대 코드 입력")
-            .setPositiveButton("확인", dialog_listener)
-            .setNegativeButton("취소",null)
-            .create()
-
-        alertDialog.setView(view)
-        alertDialog.show()
-
-
-    }
+//    private fun showInputInviteCodePopUp(){
+//        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//        val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
+//
+//        var dialog_listener = object: DialogInterface.OnClickListener {
+//            override fun onClick(dialog: DialogInterface?, which: Int) {
+//                Log.d("EditText String", view.inputInviteCode.text.toString())
+//                IoSocketConn.sendJoinToInviteCode(view.inputInviteCode.text.toString())
+//
+//            }
+//        }
+//
+//        val alertDialog = AlertDialog.Builder(this)
+//            .setTitle("초대 코드 입력")
+//            .setPositiveButton("확인", dialog_listener)
+//            .setNegativeButton("취소",null)
+//            .create()
+//
+//        alertDialog.setView(view)
+//        alertDialog.show()
+//
+//
+//    }
 
 }
