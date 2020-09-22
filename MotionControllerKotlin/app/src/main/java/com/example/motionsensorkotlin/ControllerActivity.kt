@@ -160,8 +160,9 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         var dialogManager = DialogManager(this,IoSocketConn)
 
         controller_btn_invite.setOnClickListener {
-            dialogManager.makeInvideCodeDialog()
+            dialogManager.makeInviteCodeDialog()
         }
+
         controller_btn_chat.setOnClickListener {
             dialogManager.makeSendingMessageDialog()
         }

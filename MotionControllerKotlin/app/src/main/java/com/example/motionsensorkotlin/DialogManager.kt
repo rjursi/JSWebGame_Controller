@@ -30,14 +30,14 @@ class DialogManager(context: Context, Socket: IoSocket)  {
         var view = inflater.inflate(R.layout.dialog_sendingmessage, null)
 
         dlg.setContentView(view)
-        dlg.setTitle("초대 코드 입력")
+        dlg.setTitle("채팅 입력")
 
         var btnSend = dlg.findViewById<Button>(R.id.message_btnSend)
         var btnCancel = dlg.findViewById<Button>(R.id.message_btnCancel)
-        var txtMessage = dlg.findViewById<EditText>(R.id.message_edit)
+        var txtMessage = dlg.findViewById<EditText>(R.id.message_edit).text
         btnSend.setOnClickListener {
-            IoSocketConn.sendChatMessage(txtMessage.text.toString())
-            Toast.makeText(context,txtMessage.text.toString(),Toast.LENGTH_LONG).show()
+            IoSocketConn.sendChatMessage(txtMessage.toString())
+            Toast.makeText(context,txtMessage.toString(),Toast.LENGTH_LONG).show()
             dlg.dismiss()
         }
         btnCancel.setOnClickListener {
@@ -48,7 +48,7 @@ class DialogManager(context: Context, Socket: IoSocket)  {
     }
 
     //초대 코드 입력을 위한 dialog
-    fun makeInvideCodeDialog(){
+    fun makeInviteCodeDialog(){
         var view = inflater.inflate(R.layout.dialog_inputinvitecode, null)
 
         dlg.setContentView(view)
@@ -56,11 +56,11 @@ class DialogManager(context: Context, Socket: IoSocket)  {
 
         var btnSend = dlg.findViewById<Button>(R.id.invide_btnSend)
         var btnCancel = dlg.findViewById<Button>(R.id.invite_btnCancel)
-        var txtInviteCode = dlg.findViewById<EditText>(R.id.invite_edit)
+        var txtInviteCode = dlg.findViewById<EditText>(R.id.invite_edit).text
 
         btnSend.setOnClickListener {
-            IoSocketConn.sendJoinToInviteCode(txtInviteCode.text.toString())
-            Toast.makeText(context,txtInviteCode.text.toString(),Toast.LENGTH_LONG).show()
+            IoSocketConn.sendJoinToInviteCode(txtInviteCode.toString())
+            Toast.makeText(context,txtInviteCode.toString(),Toast.LENGTH_LONG).show()
             dlg.dismiss()
         }
         btnCancel.setOnClickListener { dlg.dismiss() }
