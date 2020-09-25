@@ -17,6 +17,9 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
     private var baseRadius = 0f
     private var hatRadius = 0f
     private var joystickCallback: JoystickListener? = null
+
+    var isfirstTouch = true//조이스틱의 유동적 위치 조정을 위한 변수
+
     private fun setupDimensions() {
         centerX = width / 2.toFloat()
         centerY = width / 2.toFloat()
@@ -61,14 +64,19 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
             val myCanvas = this.holder.lockCanvas()
             val colors = Paint()
             //myCanvas.drawColor(0x00AAAAAA, PorterDuff.Mode.CLEAR)
-            myCanvas.drawARGB(255,92,209,229);
-            colors.setARGB(255, 50, 50, 50)
+            myCanvas.drawARGB(255,92,209,229)//backcolor
+
+            colors.setARGB(255, 50, 50, 50)//back of joystick
             myCanvas.drawCircle(centerX, centerY, baseRadius, colors)
-            colors.setARGB(255, 255, 0, 0)
+
+
+            colors.setARGB(255, 255, 0, 0)//front of joystick
             myCanvas.drawCircle(newX, newY, hatRadius, colors)
+
             holder.unlockCanvasAndPost(myCanvas)
         }
     }
+
 
     override fun surfaceCreated(holder: SurfaceHolder) {
         setupDimensions()
@@ -85,10 +93,16 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {}
 
+
     override fun onTouch(v: View, e: MotionEvent): Boolean {
         Log.d("onTouchEvent : ", "JoystickTouched")
         if (v == this) {
             if (e.action != MotionEvent.ACTION_UP) {
+                if(isfirstTouch){
+                    centerX = e.x
+                    centerY=e.y
+                    isfirstTouch=false
+                }
                 val displacement = Math.sqrt(
                     Math.pow(
                         e.x - centerX.toDouble(),
@@ -117,6 +131,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
             } else {
                 drawJoystick(centerX, centerY)
                 joystickCallback!!.onJoystickMoved(0f, 0f, id)
+                isfirstTouch=true
             }
         }
         return true
