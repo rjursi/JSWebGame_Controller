@@ -13,10 +13,7 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -34,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_controller.*
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
 
-class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
+class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListener
     // : - AppCompatActivity 클래스를 상속을 한다는 의미 (클래스 앞에 붙을 경우)
 
     private val sensorManager by lazy{
@@ -59,64 +56,64 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
             IoSocketConn
         )
 
-    override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
-        var directionData : Double = 0.0
-        when (source) {
-            R.id.joystickLeft ->
-            {
-                if( (yPercent >= 0.3 || yPercent <= -0.3) || (xPercent >= 0.3 || xPercent <= -0.3)) {
-
-                    Log.d("Left Joystick", "X percent: $xPercent Y percent: $yPercent")
-
-                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > 0.0 && xPercent < 1.0)) {
-                        tvLog.text = "1.5시 방향"
-                        directionData = 1.5
-                    }
-                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent > 0.0 && xPercent <= 1.0)) {
-                        tvLog.text = "3시방향"
-                        directionData = 3.0
-                    }
-                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > 0.0 && xPercent < 1.0)) {
-                        tvLog.text = "4.5시 방향"
-                        directionData = 4.5
-                    }
-                    if ((yPercent > 0.0 && yPercent <= 1.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
-                        tvLog.text = "6시방향"
-                        directionData = 6.0
-                    }
-                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > -1.0 && xPercent < 0.0)) {
-                        tvLog.text = "7.5시 방향"
-                        directionData = 7.5
-                    }
-                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent < 0.0 && xPercent >= -1.0)) {
-                        tvLog.text = "9시방향"
-                        directionData = 9.0
-                    }
-
-                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > -1.0 && xPercent < 0.0)) {
-                        tvLog.text = "10.5시 방향"
-                        directionData = 10.5
-                    }
-                    if ((yPercent >= -1.0 && yPercent < 0.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
-                        tvLog.text = "12시방향"
-                        directionData = 12.0
-                    }
-
-                    Log.d("DirectionData","Direction : $directionData")
-
-                    directionData = String.format("%.2f", directionData).toDouble()
-                    IoSocketConn.sendJoystickData(directionData)
-
-                }
-
-
-                if (yPercent == 0F && xPercent == 0F)
-                {
-                    tvLog.text = ""
-                }
-            }
-        }
-    }
+//    override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
+//        var directionData : Double = 0.0
+//        when (source) {
+//            R.id.joystickLeft ->
+//            {
+//                if( (yPercent >= 0.3 || yPercent <= -0.3) || (xPercent >= 0.3 || xPercent <= -0.3)) {
+//
+//                    Log.d("Left Joystick", "X percent: $xPercent Y percent: $yPercent")
+//
+//                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > 0.0 && xPercent < 1.0)) {
+//                        tvLog.text = "1.5시 방향"
+//                        directionData = 1.5
+//                    }
+//                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent > 0.0 && xPercent <= 1.0)) {
+//                        tvLog.text = "3시방향"
+//                        directionData = 3.0
+//                    }
+//                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > 0.0 && xPercent < 1.0)) {
+//                        tvLog.text = "4.5시 방향"
+//                        directionData = 4.5
+//                    }
+//                    if ((yPercent > 0.0 && yPercent <= 1.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
+//                        tvLog.text = "6시방향"
+//                        directionData = 6.0
+//                    }
+//                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > -1.0 && xPercent < 0.0)) {
+//                        tvLog.text = "7.5시 방향"
+//                        directionData = 7.5
+//                    }
+//                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent < 0.0 && xPercent >= -1.0)) {
+//                        tvLog.text = "9시방향"
+//                        directionData = 9.0
+//                    }
+//
+//                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > -1.0 && xPercent < 0.0)) {
+//                        tvLog.text = "10.5시 방향"
+//                        directionData = 10.5
+//                    }
+//                    if ((yPercent >= -1.0 && yPercent < 0.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
+//                        tvLog.text = "12시방향"
+//                        directionData = 12.0
+//                    }
+//
+//                    Log.d("DirectionData","Direction : $directionData")
+//
+//                    directionData = String.format("%.2f", directionData).toDouble()
+//                    IoSocketConn.sendJoystickData(directionData)
+//
+//                }
+//
+//
+//                if (yPercent == 0F && xPercent == 0F)
+//                {
+//                    tvLog.text = ""
+//                }
+//            }
+//        }
+//    }
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,20 +138,25 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         // 서버 연결
         IoSocketConn.connectIoServer(gamesocketId)
 
+        //JoystickView를 객체화 시켜서 현재 화면의 framelayout에 추가함
+        //생명주기 관련해서 센서적용 및 해제를 위해 sensorManager까지 매개변수로 넘겼음
+        var view = JoystickView(this,IoSocketConn,sensorManager) as SurfaceView
+        controller_frame.addView(view)
+
         // 해당 버튼을 누를때만 보내도록 설정
-        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
-            when(event.action){
-                MotionEvent.ACTION_DOWN ->{
-                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    sensorManager.unregisterListener(gyroScopeSensorListener)
-                }
-            }
-
-            true
-        }
+//        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
+//            when(event.action){
+//                MotionEvent.ACTION_DOWN ->{
+//                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
+//                }
+//
+//                MotionEvent.ACTION_UP -> {
+//                    sensorManager.unregisterListener(gyroScopeSensorListener)
+//                }
+//            }
+//
+//            true
+//        }
 
         //초대코드와 채팅메시지 dialog관리를 위한 매니저 객체
         var dialogManager = DialogManager(this,IoSocketConn)
@@ -166,9 +168,6 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         controller_btn_chat.setOnClickListener {
             dialogManager.makeSendingMessageDialog()
         }
-
-
-
 
 
     }

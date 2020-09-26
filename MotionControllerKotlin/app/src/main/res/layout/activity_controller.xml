@@ -20,11 +20,17 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/colorAccent"/>
 
-    <com.example.motionsensorkotlin.JoystickView
+<!--    <com.example.motionsensorkotlin.JoystickView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="660dp"-->
+<!--        android:id="@+id/joystickLeft"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tvLog"-->
+<!--        />-->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="660dp"
-        android:id="@+id/joystickLeft"
         app:layout_constraintTop_toBottomOf="@id/tvLog"
+        android:id="@+id/controller_frame"
         />
 
 
