@@ -55,4 +55,6 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+
+    implementation 'com.android.support:design:26.1.0'
 }

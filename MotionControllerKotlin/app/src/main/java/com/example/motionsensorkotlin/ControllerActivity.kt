@@ -14,6 +14,8 @@ import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -55,6 +57,14 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         GyroScopeSensorListener(
             IoSocketConn
         )
+
+    // if flt_btn_main is opened set true
+    var isFltOpen = false
+    lateinit var anim_flt_open :Animation
+    lateinit var anim_flt_close:Animation
+
+    // 2명이 준비가 되면 초대코드창 안떠야하니까
+    var isReadyToPlay = false
 
 //    override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
 //        var directionData : Double = 0.0
@@ -115,17 +125,29 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
 //        }
 //    }
 
+
+
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         // ? : Null 일 수 있음을 지칭함
         // savedInstanceState : 액티비티의 이전 상태, 즉 잠시 어플리케이션을 나갓다 오거나 어플리케이션의 이전 상태
+
+
+        //remove title bar and set full screen
+        try {
+            supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } catch (e: NullPointerException) {}
+
+
 
         // 화면이 꺼지지 않도록 설정
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // 화면이 세로 모드로 고정이 되도록 지정
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_controller)
@@ -142,6 +164,11 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         //생명주기 관련해서 센서적용 및 해제를 위해 sensorManager까지 매개변수로 넘겼음
         var view = JoystickView(this,IoSocketConn,sensorManager) as SurfaceView
         controller_frame.addView(view)
+
+        //set animation from R.anim
+        anim_flt_open = AnimationUtils.loadAnimation(this,R.anim.flt_open)
+        anim_flt_close = AnimationUtils.loadAnimation(this,R.anim.flt_close)
+
 
         // 해당 버튼을 누를때만 보내도록 설정
 //        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
@@ -161,15 +188,54 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         //초대코드와 채팅메시지 dialog관리를 위한 매니저 객체
         var dialogManager = DialogManager(this,IoSocketConn)
 
-        controller_btn_invite.setOnClickListener {
-            dialogManager.makeInviteCodeDialog()
-        }
+//        controller_btn_invite.setOnClickListener {
+//            dialogManager.makeInviteCodeDialog()
+//        }
+//
+//        controller_btn_chat.setOnClickListener {
+//            dialogManager.makeSendingMessageDialog()
+//        }
 
-        controller_btn_chat.setOnClickListener {
+
+
+
+
+        //2명이 됐으면 isReadyToPlay를 true로 바꿔서 초대코드입력창 안뜨게
+//        if(IoSocketConn.mSocket.on())
+//            isReadyToPlay = true
+
+        controller_flt_btn_main.setOnClickListener {
+            toggleFlt()
+        }
+        controller_flt_btn_chat.setOnClickListener{
+            toggleFlt()
             dialogManager.makeSendingMessageDialog()
         }
+        controller_flt_btn_invite.setOnClickListener{
+            toggleFlt()
+            if(! isReadyToPlay)
+                dialogManager.makeInviteCodeDialog()
+        }
+    }
 
 
+
+    fun toggleFlt(){
+        if(isFltOpen){
+            controller_flt_btn_main.setImageResource(R.drawable.ic_baseline_add_33)
+            controller_flt_btn_chat.startAnimation(anim_flt_close)
+            controller_flt_btn_invite.startAnimation(anim_flt_close)
+            controller_flt_btn_chat.isClickable = false
+            controller_flt_btn_chat.isClickable = false
+            isFltOpen = false
+        }else{
+            controller_flt_btn_main.setImageResource(R.drawable.ic_baseline_close_33)
+            controller_flt_btn_chat.startAnimation(anim_flt_open)
+            controller_flt_btn_invite.startAnimation(anim_flt_open)
+            controller_flt_btn_chat.isClickable = true
+            controller_flt_btn_chat.isClickable = true
+            isFltOpen = true
+        }
     }
 
 
@@ -199,6 +265,8 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         IoSocketConn.sendLogoutMsg();
         super.onDestroy()
     }
+
+
 
 
 //    private fun showInputInviteCodePopUp(){
