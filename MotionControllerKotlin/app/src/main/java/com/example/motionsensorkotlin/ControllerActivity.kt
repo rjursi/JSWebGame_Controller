@@ -170,6 +170,9 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         anim_flt_close = AnimationUtils.loadAnimation(this,R.anim.flt_close)
 
 
+        
+
+
         // 해당 버튼을 누를때만 보내도록 설정
 //        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
 //            when(event.action){
@@ -221,7 +224,7 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
 
 
     fun toggleFlt(){
-        if(isFltOpen){
+        if(isFltOpen){  //hide button when pressed when flt is open
             controller_flt_btn_main.setImageResource(R.drawable.ic_baseline_add_33)
             controller_flt_btn_chat.startAnimation(anim_flt_close)
             controller_flt_btn_invite.startAnimation(anim_flt_close)
@@ -230,6 +233,8 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
             isFltOpen = false
         }else{
             controller_flt_btn_main.setImageResource(R.drawable.ic_baseline_close_33)
+            if(isReadyToPlay)
+                controller_flt_btn_invite.setImageResource(R.drawable.ic_baseline_people_30)
             controller_flt_btn_chat.startAnimation(anim_flt_open)
             controller_flt_btn_invite.startAnimation(anim_flt_open)
             controller_flt_btn_chat.isClickable = true
