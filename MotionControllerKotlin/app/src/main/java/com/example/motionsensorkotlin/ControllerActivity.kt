@@ -170,7 +170,15 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         anim_flt_close = AnimationUtils.loadAnimation(this,R.anim.flt_close)
 
 
-        
+        // 초대코드 서버로부터 받을때까지 대기하고 받으면 실행하는 코드
+        while(true){
+            if(IoSocketConn.inviteCode === ""){
+                continue
+            }else{
+                controller_txt_myInviteCode.setText(IoSocketConn.inviteCode);
+                break
+            }
+        }
 
 
         // 해당 버튼을 누를때만 보내도록 설정
