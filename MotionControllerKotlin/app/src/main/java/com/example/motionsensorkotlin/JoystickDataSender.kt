@@ -30,7 +30,7 @@ class JoystickDataSender (ioSocketConn : IoSocket) {
                 if(nowDirectionData == 0.5){
                     ioSocketConn.sendJoystickData(nowDirectionData)
                     isRunning = false
-                    Log.d("Coroutine Status", "Coroutine is Canceled.")
+                    Log.d("Coroutine Status", "Coroutine is Canceled. : Interaction")
                     break
                 }
 
