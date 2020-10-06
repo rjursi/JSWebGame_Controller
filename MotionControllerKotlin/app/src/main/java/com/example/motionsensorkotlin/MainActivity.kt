@@ -73,8 +73,11 @@ class MainActivity : AppCompatActivity(){
         devTestBtn.setOnClickListener{
             showQRDataPopUp()
         }
-
-
+        var str = ""
+        for (i in 1 .. 100 step 2){
+            str += i.toString() + "\n"
+        }
+        txtTemp.text =str
     }
 
 

@@ -12,6 +12,7 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.animation.Animation
@@ -62,6 +63,9 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
     var isFltOpen = false
     lateinit var anim_flt_open :Animation
     lateinit var anim_flt_close:Animation
+
+    //초대코드와 채팅메시지 dialog관리를 위한 매니저 객체
+    lateinit var dialogManager : DialogManager
 
     // 2명이 준비가 되면 초대코드창 안떠야하니까
     var isReadyToPlay = false
@@ -180,7 +184,6 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
             }
         }
 
-
         // 해당 버튼을 누를때만 보내도록 설정
 //        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
 //            when(event.action){
@@ -196,8 +199,6 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
 //            true
 //        }
 
-        //초대코드와 채팅메시지 dialog관리를 위한 매니저 객체
-        var dialogManager = DialogManager(this,IoSocketConn)
 
 //        controller_btn_invite.setOnClickListener {
 //            dialogManager.makeInviteCodeDialog()
@@ -210,6 +211,7 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
 
 
 
+        dialogManager = DialogManager(this,IoSocketConn)
 
         //2명이 됐으면 isReadyToPlay를 true로 바꿔서 초대코드입력창 안뜨게
 //        if(IoSocketConn.mSocket.on())
@@ -221,6 +223,7 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
         controller_flt_btn_chat.setOnClickListener{
             toggleFlt()
             dialogManager.makeSendingMessageDialog()
+
         }
         controller_flt_btn_invite.setOnClickListener{
             toggleFlt()

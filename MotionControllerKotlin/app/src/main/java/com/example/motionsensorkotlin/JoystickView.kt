@@ -1,6 +1,7 @@
 package com.example.motionsensorkotlin
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.hardware.Sensor
@@ -29,11 +30,12 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
         centerX = width / 2.toFloat()
         centerY = width / 2.toFloat()
         baseRadius =
-            Math.min(width, height) / 4.toFloat() // Math.min함수는 둘중 작은것을 반환
-        hatRadius = Math.min(width, height) / 6.toFloat()
+            Math.min(width, height) / 5.toFloat() // Math.min함수는 둘중 작은것을 반환
+        hatRadius = Math.min(width, height) / 9.toFloat()
     }
     var IoSocketConn : IoSocket
-    lateinit var sensorManager : SensorManager
+    var sensorManager : SensorManager
+    lateinit var joystickDataSender :JoystickDataSender
 
     constructor(context: Context?, IoSocket : IoSocket,sensorManagerParam: SensorManager) : super(context) {
         holder.addCallback(this)
@@ -48,6 +50,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
                 GyroScopeSensorListener(
                     IoSocketConn
                 )
+        joystickDataSender = JoystickDataSender(IoSocketConn)
     }
 
     var gyroScopeSensorListener : GyroScopeSensorListener
@@ -62,7 +65,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
         if (holder.surface.isValid) {
             val myCanvas = this.holder.lockCanvas()
             val colors = Paint()
-            //배경, 이거 안하면 까만 배경위에 컨트롤러 액티비티의 컴포넌트들이 둥둥떠다닐거임
+            //배경색 지정 안하면 조이스틱이 중첩되서 생김
             myCanvas.drawARGB(255,92,209,229)//backcolor
 
             //조이스틱 아래에 깔리는 친구, isFirstToush로 처음 터치할때 받은 위치값으로 위치지정
@@ -150,6 +153,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
 
     fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int){
         var directionData : Double = 0.0
+
         if( (yPercent >= 0.3 || yPercent <= -0.3) || (xPercent >= 0.3 || xPercent <= -0.3)) {
 
             Log.d("Left Joystick", "X percent: $xPercent Y percent: $yPercent")
@@ -188,17 +192,25 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
                 directionData = 12.0
             }
 
-            Log.d("DirectionData","Direction : $directionData")
-
+            Log.d("DirectionData", "Direction : $directionData")
             directionData = String.format("%.2f", directionData).toDouble()
-            IoSocketConn.sendJoystickData(directionData)
 
+        }
+        else
+        {
+            directionData = 0.5
+            Log.d("DirectionData", "Direction : $directionData")
+            directionData = String.format("%.2f", directionData).toDouble()
         }
 
         if (yPercent == 0F && xPercent == 0F)
         {
-           // tvLog.text = ""
+            directionData = 0.0
         }
+
+        joystickDataSender.nowDirectionData = directionData
+        joystickDataSender.coroutine_runningCheck()
+
     }
 
 //    interface JoystickListener {

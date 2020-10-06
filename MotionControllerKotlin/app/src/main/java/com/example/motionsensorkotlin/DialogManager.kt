@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -14,14 +15,30 @@ import com.example.motionsensorkotlin.IOSocket.IoSocket
 class DialogManager(context: Context, Socket: IoSocket)  {
 
     val context = context
-    private val dlg = Dialog(context)   //부모 액티비티의 context 가 들어감
+    private var dlg = Dialog(context)   //부모 액티비티의 context 가 들어감
     val IoSocketConn =Socket
 
     val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    lateinit var windowManager : WindowManager.LayoutParams
+
+
+
 
     init {
-        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dlg.setCancelable(false)    //다이얼로그 밖을 누를 때 안닫히도록
+
+
+
+        var displayMetric = context.resources.displayMetrics
+        var width = displayMetric.widthPixels
+        var height = displayMetric.heightPixels
+
+        var wm :WindowManager.LayoutParams = dlg.window!!.attributes
+        wm.width = width/2
+        wm.height = height/2
+        dlg.window!!.attributes= wm
+
     }
 
     //채팅 보내기 위한 dialog

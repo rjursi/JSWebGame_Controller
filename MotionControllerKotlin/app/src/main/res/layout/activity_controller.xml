@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     >
 
 
@@ -27,12 +28,17 @@
 <!--        android:id="@+id/joystickLeft"-->
 <!--        app:layout_constraintTop_toBottomOf="@id/tvLog"-->
 <!--        />-->
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/controller_frame"
-        />
+        >
+
+
+    </FrameLayout>
 
 
 
@@ -83,6 +89,7 @@
     <TextView
         android:id="@+id/controller_txt_myInviteCode"
         android:textSize="40dp"
+        android:textColor="@color/colorAccent"
         android:textStyle="bold"
         android:textAlignment="center"
         android:gravity="center"
