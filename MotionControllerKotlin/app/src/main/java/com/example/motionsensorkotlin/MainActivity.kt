@@ -78,6 +78,9 @@ class MainActivity : AppCompatActivity(){
             str += i.toString() + "\n"
         }
         txtTemp.text =str
+
+
+
     }
 
 
