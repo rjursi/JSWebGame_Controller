@@ -11,6 +11,8 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity(){
     lateinit var app_unique_id : String
 
 
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         // ? : Null 일 수 있음을 지칭함
@@ -66,8 +69,24 @@ class MainActivity : AppCompatActivity(){
         app_unique_id = intent.getStringExtra("intent_uniqueID")
 
 
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork : NetworkInfo ?= cm.activeNetworkInfo
+
+
+
+
         connectCtrlBtn.setOnClickListener {
-            IntentIntegrator(this).initiateScan()
+            //인터넷 연결 확인
+            if(activeNetwork?.isConnectedOrConnecting == true)
+                IntentIntegrator(this).initiateScan()
+            else//연결이 안되어 있으면 dialog띄움
+            {
+                var builder : AlertDialog.Builder = AlertDialog.Builder(this)
+                builder.setTitle("인터넷").setMessage("인터넷이 연결되지 않았습니다.")
+                var alertDialog : AlertDialog = builder.create()
+                alertDialog.show()
+            }
+
         }
 
         devTestBtn.setOnClickListener{
