@@ -32,6 +32,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.connectCtrlBtn
@@ -75,6 +80,8 @@ class MainActivity : AppCompatActivity(){
 
 
 
+
+
         connectCtrlBtn.setOnClickListener {
             //인터넷 연결 확인
             if(activeNetwork?.isConnectedOrConnecting == true)
@@ -97,6 +104,24 @@ class MainActivity : AppCompatActivity(){
             str += i.toString() + "\n"
         }
         txtTemp.text =str
+
+        val database = Firebase.database
+//        val myref = database.getReference("message")
+        val myref = database.getReference()
+        myref.setValue("asfsdfsafasf")
+
+        myref.addValueEventListener(object:ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val data :String = snapshot.value as String
+                txtTemp.text = data.toString()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
 
 
