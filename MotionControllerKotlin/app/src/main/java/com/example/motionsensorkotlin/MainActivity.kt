@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(){
 
     lateinit var introIntent : Intent
     lateinit var app_unique_id : String
-
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -74,8 +74,8 @@ class MainActivity : AppCompatActivity(){
         app_unique_id = intent.getStringExtra("intent_uniqueID")
 
 
-        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork : NetworkInfo ?= cm.activeNetworkInfo
+
+
 
 
 
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity(){
 
 
         connectCtrlBtn.setOnClickListener {
+            var activeNetwork : NetworkInfo ?= cm.activeNetworkInfo
             //인터넷 연결 확인
             if(activeNetwork?.isConnectedOrConnecting == true)
                 IntentIntegrator(this).initiateScan()
