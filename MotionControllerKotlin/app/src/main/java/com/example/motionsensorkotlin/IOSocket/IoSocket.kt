@@ -148,9 +148,7 @@ class  IoSocket (controllerActivity : Activity){
     }
 
     fun sendJoystickData(data : Double){
-
         mSocket.emit("ad_joystickData", data)
-
     }
 
     // 가속도 센서 데이터 보내는 함수
@@ -162,6 +160,10 @@ class  IoSocket (controllerActivity : Activity){
 
     fun sendGyroData(data : JSONObject){
         mSocket.emit("ad_GyroData",data)
+    }
+
+    fun sendTypingSignal(){
+        mSocket.emit("ad_TypingSignal")
     }
 
     fun sendChatMessage(message: String){

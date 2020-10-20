@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "284784991140",
+    "firebase_url": "https://blindness-b5f51.firebaseio.com",
+    "project_id": "blindness-b5f51",
+    "storage_bucket": "blindness-b5f51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284784991140:android:e2070af0b098a9c2d43f31",
+        "android_client_info": {
+          "package_name": "com.example.motionsensorkotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284784991140-9dukfpq89vdb0v89162d509jopppdkk2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKtlFS2Qsba_EC1hGRCTmJf75XIp8altM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "284784991140-9dukfpq89vdb0v89162d509jopppdkk2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

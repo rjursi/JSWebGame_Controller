@@ -12,12 +12,11 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
-import android.provider.Settings
+import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -32,16 +31,10 @@ import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
 import kotlinx.android.synthetic.main.activity_controller.*
-import kotlinx.android.synthetic.main.activity_controller.view.*
 
 import kotlinx.android.synthetic.main.dialog_inputinvitecode.view.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import java.io.IOException
 
-
-
-class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
+class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListener
     // : - AppCompatActivity 클래스를 상속을 한다는 의미 (클래스 앞에 붙을 경우)
 
     private val sensorManager by lazy{
@@ -52,15 +45,10 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
 
     // 앞 인트로 Activity 에서 보낸 User ID 값을 받기 위한 인텐트 설정
     lateinit var byConnIntent: Intent
+
+
     lateinit var gamesocketId : String
-    var isSending : Boolean = false
-
-
-
-
     val IoSocketConn : IoSocket = IoSocket(this)
-
-    val joystickDataSender : JoystickDataSender = JoystickDataSender(IoSocketConn)
     var accelerometerSensorListener : AccelerometerSensorListener =
         AccelerometerSensorListener(
             IoSocketConn
@@ -70,104 +58,100 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         GyroScopeSensorListener(
             IoSocketConn
         )
+
+    // if flt_btn_main is opened set true
+    var isFltOpen = false
+    lateinit var anim_flt_open :Animation
+    lateinit var anim_flt_close:Animation
+
+    //초대코드와 채팅메시지 dialog관리를 위한 매니저 객체
     lateinit var dialogManager : DialogManager
 
-    var preDirectionData : Double = 0.0
+    // 2명이 준비가 되면 초대코드창 안떠야하니까
+    var isReadyToPlay = false
+
+//    override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
+//        var directionData : Double = 0.0
+//        when (source) {
+//            R.id.joystickLeft ->
+//            {
+//                if( (yPercent >= 0.3 || yPercent <= -0.3) || (xPercent >= 0.3 || xPercent <= -0.3)) {
+//
+//                    Log.d("Left Joystick", "X percent: $xPercent Y percent: $yPercent")
+//
+//                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > 0.0 && xPercent < 1.0)) {
+//                        tvLog.text = "1.5시 방향"
+//                        directionData = 1.5
+//                    }
+//                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent > 0.0 && xPercent <= 1.0)) {
+//                        tvLog.text = "3시방향"
+//                        directionData = 3.0
+//                    }
+//                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > 0.0 && xPercent < 1.0)) {
+//                        tvLog.text = "4.5시 방향"
+//                        directionData = 4.5
+//                    }
+//                    if ((yPercent > 0.0 && yPercent <= 1.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
+//                        tvLog.text = "6시방향"
+//                        directionData = 6.0
+//                    }
+//                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > -1.0 && xPercent < 0.0)) {
+//                        tvLog.text = "7.5시 방향"
+//                        directionData = 7.5
+//                    }
+//                    if ((yPercent <= 0.3 && yPercent >= -0.3) && (xPercent < 0.0 && xPercent >= -1.0)) {
+//                        tvLog.text = "9시방향"
+//                        directionData = 9.0
+//                    }
+//
+//                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > -1.0 && xPercent < 0.0)) {
+//                        tvLog.text = "10.5시 방향"
+//                        directionData = 10.5
+//                    }
+//                    if ((yPercent >= -1.0 && yPercent < 0.0) && (xPercent >= -0.3 && xPercent <= 0.3)) {
+//                        tvLog.text = "12시방향"
+//                        directionData = 12.0
+//                    }
+//
+//                    Log.d("DirectionData","Direction : $directionData")
+//
+//                    directionData = String.format("%.2f", directionData).toDouble()
+//                    IoSocketConn.sendJoystickData(directionData)
+//
+//                }
+//
+//
+//                if (yPercent == 0F && xPercent == 0F)
+//                {
+//                    tvLog.text = ""
+//                }
+//            }
+//        }
+//    }
 
 
-    override fun onJoystickMoved(xPercent: Float, yPercent: Float, source: Int) {
-        var directionData : Double = 0.0
 
-        when (source) {
-            R.id.joystickLeft ->
-            {
-                if( (yPercent >= 0.3 || yPercent <= -0.3) || (xPercent >= 0.3 || xPercent <= -0.3)) {
-
-                    Log.d("Left Joystick", "X percent: $xPercent Y percent: $yPercent")
-
-                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > 0.0 && xPercent < 1.0)) {
-                        tvLog.text = "1.5시 방향"
-                        directionData = 1.5
-                    }
-
-                    if ((yPercent <= 0.5 && yPercent >= -0.5) && (xPercent > 0.0 && xPercent <= 1.0)) {
-                        tvLog.text = "3시방향"
-                        directionData = 3.0
-                    }
-                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > 0.0 && xPercent < 1.0)) {
-                        tvLog.text = "4.5시 방향"
-                        directionData = 4.5
-                    }
-                    if ((yPercent > 0.0 && yPercent <= 1.0) && (xPercent >= -0.5 && xPercent <= 0.5)) {
-                        tvLog.text = "6시방향"
-                        directionData = 6.0
-                    }
-                    if ((yPercent < 1.0 && yPercent > 0.0) && (xPercent > -1.0 && xPercent < 0.0)) {
-                        tvLog.text = "7.5시 방향"
-                        directionData = 7.5
-                    }
-                    if ((yPercent <= 0.5 && yPercent >= -0.5) && (xPercent < 0.0 && xPercent >= -1.0)) {
-                        tvLog.text = "9시방향"
-                        directionData = 9.0
-                    }
-                    if ((yPercent < 0.0 && yPercent > -1.0) && (xPercent > -1.0 && xPercent < 0.0)) {
-                        tvLog.text = "10.5시 방향"
-                        directionData = 10.5
-                    }
-                    if ((yPercent >= -1.0 && yPercent < 0.0) && (xPercent >= -0.5 && xPercent <= 0.5)) {
-                        tvLog.text = "12시방향"
-                        directionData = 12.0
-                    }
-
-
-
-
-
-
-
-                    Log.d("DirectionData", "Direction : $directionData")
-
-                    directionData = String.format("%.2f", directionData).toDouble()
-                }else{
-                    // 여기는 그냥 터치만 했을 경우 , 즉 상호작용용
-                    tvLog.text = "상호작용";
-                    directionData = 0.5
-                    Log.d("DirectionData", "Direction : $directionData")
-
-                    directionData = String.format("%.2f", directionData).toDouble()
-
-                }
-
-
-                if (yPercent == 0F && xPercent == 0F)
-                {
-                    tvLog.text = ""
-                    directionData = 0.0
-                }
-
-                joystickDataSender.nowDirectionData = directionData
-                joystickDataSender.coroutine_runningCheck()
-
-            }
-
-
-            }
-        }
-
-
-    var texto: TextView? = null
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         // ? : Null 일 수 있음을 지칭함
         // savedInstanceState : 액티비티의 이전 상태, 즉 잠시 어플리케이션을 나갓다 오거나 어플리케이션의 이전 상태
 
+
+        //remove title bar and set full screen
+        try {
+            supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } catch (e: NullPointerException) {}
+
+
+
         // 화면이 꺼지지 않도록 설정
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // 화면이 세로 모드로 고정이 되도록 지정
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_controller)
@@ -177,55 +161,99 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
         byConnIntent = intent
         gamesocketId = byConnIntent.getStringExtra("gamesocketId")
 
-        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
-            when(event.action){
-                MotionEvent.ACTION_DOWN ->{
-                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    sensorManager.unregisterListener(gyroScopeSensorListener)
-                }
-            }
-
-            true
-        }
-
-        controller_btn_invite.setOnClickListener {
-            dialogManager.makeInviteCodeDialog()
-        }
-
-        controller_btn_chat.setOnClickListener {
-            dialogManager.makeSendingMessageDialog()
-        }
-
-        dialogManager = DialogManager(this, IoSocketConn)
-
-
         // 서버 연결
         IoSocketConn.connectIoServer(gamesocketId)
 
+        //JoystickView를 객체화 시켜서 현재 화면의 framelayout에 추가함
+        //생명주기 관련해서 센서적용 및 해제를 위해 sensorManager까지 매개변수로 넘겼음
+        var view = JoystickView(this,IoSocketConn,sensorManager) as SurfaceView
+        controller_frame.addView(view)
+
+        //set animation from R.anim
+        anim_flt_open = AnimationUtils.loadAnimation(this,R.anim.flt_open)
+        anim_flt_close = AnimationUtils.loadAnimation(this,R.anim.flt_close)
+
+
         // 초대코드 서버로부터 받을때까지 대기하고 받으면 실행하는 코드
 
-        runBlocking{
-            launch {
-                while (true) {
-                    if (IoSocketConn.inviteCode === "") {
-                        continue
-                    } else {
-                        viewMyInviteCode.setText(IoSocketConn.inviteCode);
-                        break
-                    }
-                }
+        while(true){
+            if(IoSocketConn.inviteCode === ""){
+                continue
+            }else{
+                controller_txt_myInviteCode.setText(IoSocketConn.inviteCode);
+                break
             }
         }
 
+        // 해당 버튼을 누를때만 보내도록 설정
+//        accTestBtn.setOnTouchListener {_:View, event:MotionEvent ->
+//            when(event.action){
+//                MotionEvent.ACTION_DOWN ->{
+//                    sensorManager.registerListener(gyroScopeSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME)
+//                }
+//
+//                MotionEvent.ACTION_UP -> {
+//                    sensorManager.unregisterListener(gyroScopeSensorListener)
+//                }
+//            }
+//
+//            true
+//        }
 
-            // 해당 버튼을 누를때만 보내도록
+
+//        controller_btn_invite.setOnClickListener {
+//            dialogManager.makeInviteCodeDialog()
+//        }
+//
+//        controller_btn_chat.setOnClickListener {
+//            dialogManager.makeSendingMessageDialog()
+//        }
 
 
 
 
+        dialogManager = DialogManager(this,IoSocketConn)
+
+
+        //2명이 됐으면 isReadyToPlay를 true로 바꿔서 초대코드입력창 안뜨게
+//        if(IoSocketConn.mSocket.on())
+//            isReadyToPlay = true
+
+        controller_flt_btn_main.setOnClickListener {
+            toggleFlt()
+        }
+        controller_flt_btn_chat.setOnClickListener{
+            toggleFlt()
+            dialogManager.makeSendingMessageDialog()
+
+        }
+        controller_flt_btn_invite.setOnClickListener{
+            toggleFlt()
+            if(! isReadyToPlay)
+                dialogManager.makeInviteCodeDialog()
+        }
+    }
+
+
+
+    fun toggleFlt(){
+        if(isFltOpen){  //hide button when pressed when flt is open
+            controller_flt_btn_main.setImageResource(R.drawable.ic_baseline_add_33)
+            controller_flt_btn_chat.startAnimation(anim_flt_close)
+            controller_flt_btn_invite.startAnimation(anim_flt_close)
+            controller_flt_btn_chat.isClickable = false
+            controller_flt_btn_chat.isClickable = false
+            isFltOpen = false
+        }else{
+            controller_flt_btn_main.setImageResource(R.drawable.ic_baseline_close_33)
+            if(isReadyToPlay)
+                controller_flt_btn_invite.setImageResource(R.drawable.ic_baseline_people_30)
+            controller_flt_btn_chat.startAnimation(anim_flt_open)
+            controller_flt_btn_invite.startAnimation(anim_flt_open)
+            controller_flt_btn_chat.isClickable = true
+            controller_flt_btn_chat.isClickable = true
+            isFltOpen = true
+        }
     }
 
 
@@ -257,28 +285,30 @@ class ControllerActivity : AppCompatActivity(), JoystickView.JoystickListener {
     }
 
 
-    private fun showInputInviteCodePopUp(){
-        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
-
-        var dialog_listener = object: DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface?, which: Int) {
-                Log.d("EditText String", view.controller_btn_invite.text.toString())
-                IoSocketConn.sendJoinToInviteCode(view.controller_btn_invite.text.toString())
-
-            }
-        }
-
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("초대 코드 입력")
-            .setPositiveButton("확인", dialog_listener)
-            .setNegativeButton("취소",null)
-            .create()
-
-        alertDialog.setView(view)
-        alertDialog.show()
 
 
-    }
+//    private fun showInputInviteCodePopUp(){
+//        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//        val view = inflater.inflate(R.layout.dialog_inputinvitecode, null);
+//
+//        var dialog_listener = object: DialogInterface.OnClickListener {
+//            override fun onClick(dialog: DialogInterface?, which: Int) {
+//                Log.d("EditText String", view.inputInviteCode.text.toString())
+//                IoSocketConn.sendJoinToInviteCode(view.inputInviteCode.text.toString())
+//
+//            }
+//        }
+//
+//        val alertDialog = AlertDialog.Builder(this)
+//            .setTitle("초대 코드 입력")
+//            .setPositiveButton("확인", dialog_listener)
+//            .setNegativeButton("취소",null)
+//            .create()
+//
+//        alertDialog.setView(view)
+//        alertDialog.show()
+//
+//
+//    }
 
 }
