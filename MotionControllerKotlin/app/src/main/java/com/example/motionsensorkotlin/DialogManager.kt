@@ -28,8 +28,6 @@ class DialogManager(context: Context, Socket: IoSocket)  {
 //        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dlg.setCancelable(false)    //다이얼로그 밖을 누를 때 안닫히도록
 
-
-
         var displayMetric = context.resources.displayMetrics
         var width = displayMetric.widthPixels
         var height = displayMetric.heightPixels

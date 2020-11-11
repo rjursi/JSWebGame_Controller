@@ -23,16 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ConnectControllerActivity">
 
-        </activity>
         <activity android:name=".MainActivity">
-
         </activity>
 
         <activity android:name=".ControllerActivity">
         </activity>
-        <activity android:name=".tempActivity"></activity>
+
+        <activity android:name=".DevNoteActivity"></activity>
 
     </application>
 

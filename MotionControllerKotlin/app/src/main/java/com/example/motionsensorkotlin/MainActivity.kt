@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(){
 
     lateinit var introIntent : Intent
     lateinit var app_unique_id : String
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
 
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -73,15 +73,7 @@ class MainActivity : AppCompatActivity(){
         introIntent = intent // getIntent 역할
         app_unique_id = intent.getStringExtra("intent_uniqueID")
 
-
-
-
-
-
-
-
-
-
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectCtrlBtn.setOnClickListener {
             var activeNetwork : NetworkInfo ?= cm.activeNetworkInfo
             //인터넷 연결 확인
@@ -97,6 +89,15 @@ class MainActivity : AppCompatActivity(){
 
         }
 
+        main_scrollview_btn.setOnClickListener {
+            var intent = Intent(this,DevNoteActivity::class.java)
+            startActivityForResult(intent, 1)
+
+        }
+
+
+
+
         devTestBtn.setOnClickListener{
             showQRDataPopUp()
         }
@@ -104,29 +105,27 @@ class MainActivity : AppCompatActivity(){
         for (i in 1 .. 100 step 2){
             str += i.toString() + "\n"
         }
-        txtTemp.text =str
+        //txtTemp.text =str
 
-        val database = Firebase.database
-//        val myref = database.getReference("message")
-        val myref = database.getReference()
-        myref.setValue("asfsdfsafasf")
+//        val database = Firebase.database
+////        val myref = database.getReference("message")
+//        val myref = database.getReference()
+//        myref.setValue("asfsdfsafasf")
 
-        myref.addValueEventListener(object:ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val data :String = snapshot.value as String
-                txtTemp.text = data.toString()
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
-
-
-
+//        myref.addValueEventListener(object:ValueEventListener{
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val data :String = snapshot.value as String
+//                //txtTemp.text = data.toString()
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//            }
+//        })
     }
+
+
+
+
 
 
     private fun showQRDataPopUp(){
