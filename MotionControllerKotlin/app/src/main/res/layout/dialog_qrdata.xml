@@ -9,11 +9,17 @@
         android:text="웹 페이지에 나오는 QR 데이터를 입력해주세요."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
         />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/inputQrData"/>
+        android:id="@+id/inputQrData"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>
