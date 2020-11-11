@@ -22,8 +22,6 @@ class DialogManager(context: Context, Socket: IoSocket)  {
     lateinit var windowManager : WindowManager.LayoutParams
 
 
-
-
     init {
 //        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dlg.setCancelable(false)    //다이얼로그 밖을 누를 때 안닫히도록

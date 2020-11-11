@@ -95,12 +95,16 @@ class MainActivity : AppCompatActivity(){
 
         }
 
+        var introStr = "어쩌고 저쩌고 어쩌고 저쩌고 \n" + "어쩌고 저쩌고 어쩌고 저쩌고 \n" +
+                        "어쩌고 저쩌고 어쩌고 저쩌고 \n" +"어쩌고 저쩌고 어쩌고 저쩌고 \n" +
+                        "어쩌고 저쩌고 어쩌고 저쩌고 \n" + "어쩌고 저쩌고 어쩌고 저쩌고 \n"
+
+        main_sv_txt.setText(introStr)
 
 
-
-        devTestBtn.setOnClickListener{
-            showQRDataPopUp()
-        }
+//        devTestBtn.setOnClickListener{
+//            showQRDataPopUp()
+//        }
         var str = ""
         for (i in 1 .. 100 step 2){
             str += i.toString() + "\n"
