@@ -179,7 +179,8 @@ class ControllerActivity : AppCompatActivity() {//, JoystickView.JoystickListene
             if(IoSocketConn.inviteCode === ""){
                 continue
             }else{
-                controller_txt_myInviteCode.setText(IoSocketConn.inviteCode);
+                //controller_txt_myInviteCode.setText(controller_txt_myInviteCode.text.toString() + IoSocketConn.inviteCode)
+                controller_txt_myInviteCode.text=controller_txt_myInviteCode.text.toString() + IoSocketConn.inviteCode
                 break
             }
         }

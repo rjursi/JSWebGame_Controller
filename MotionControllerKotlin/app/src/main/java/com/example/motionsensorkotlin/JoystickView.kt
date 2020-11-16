@@ -66,7 +66,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback, OnTouchListener {
             val myCanvas = this.holder.lockCanvas()
             val colors = Paint()
             //배경색 지정 안하면 조이스틱이 중첩되서 생김
-            myCanvas.drawARGB(255,92,209,229)//backcolor
+            myCanvas.drawARGB(255,219,219,219)//backcolor
 
             //조이스틱 아래에 깔리는 친구, isFirstToush로 처음 터치할때 받은 위치값으로 위치지정
             //눌렸을때만 알파값을 1로하고 안눌러있을 때는 0.5
