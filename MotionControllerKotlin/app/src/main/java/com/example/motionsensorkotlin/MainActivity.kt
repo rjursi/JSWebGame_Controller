@@ -32,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.motionsensorkotlin.IOSocket.IoSocket
 import com.example.motionsensorkotlin.SensorListener.AccelerometerSensorListener
 import com.example.motionsensorkotlin.SensorListener.GyroScopeSensorListener
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity(){
 
 
 
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         // ? : Null 일 수 있음을 지칭함
@@ -65,10 +67,40 @@ class MainActivity : AppCompatActivity(){
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // 화면이 세로 모드로 고정이 되도록 지정
-        //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        var introStr =""
+        var progressStr=""
+
+        val firebaseDb = Firebase.database
+
+        var ref = firebaseDb.getReference("Introduce")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                introStr = snapshot.value.toString()
+                Log.d("introStr","@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+introStr)
+                main_sv_txtIntro.text=introStr
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+
+        ref = firebaseDb.getReference("Progress")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                progressStr = snapshot.value.toString()
+                Log.d("progressStr","@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+progressStr)
+                main_sv_txtProgress.text=progressStr
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+
+
 
         introIntent = intent // getIntent 역할
         app_unique_id = intent.getStringExtra("intent_uniqueID")
@@ -95,20 +127,21 @@ class MainActivity : AppCompatActivity(){
 
         }
 
-        var introStr = "어쩌고 저쩌고 어쩌고 저쩌고 \n" + "어쩌고 저쩌고 어쩌고 저쩌고 \n" +
-                        "어쩌고 저쩌고 어쩌고 저쩌고 \n" +"어쩌고 저쩌고 어쩌고 저쩌고 \n" +
-                        "어쩌고 저쩌고 어쩌고 저쩌고 \n" + "어쩌고 저쩌고 어쩌고 저쩌고 \n"
 
-        main_sv_txt.setText(introStr)
+
+
+
+
+//        var introStr = "어쩌고 저쩌고 어쩌고 저쩌고 \n" + "어쩌고 저쩌고 어쩌고 저쩌고 \n" +
+//                        "어쩌고 저쩌고 어쩌고 저쩌고 \n" +"어쩌고 저쩌고 어쩌고 저쩌고 \n" +
+//                        "어쩌고 저쩌고 어쩌고 저쩌고 \n" + "어쩌고 저쩌고 어쩌고 저쩌고 \n"
+
+        //main_sv_txtIntro.setText(introStr)
 
 
 //        devTestBtn.setOnClickListener{
 //            showQRDataPopUp()
 //        }
-        var str = ""
-        for (i in 1 .. 100 step 2){
-            str += i.toString() + "\n"
-        }
         //txtTemp.text =str
 
 //        val database = Firebase.database
